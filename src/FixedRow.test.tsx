@@ -20,11 +20,22 @@ describe("FixedRow", () => {
     expect(wrapper.find("#row-5")).toHaveLength(1)
 
     expect(wrapper.find(ListItem)).toHaveLength(6)
-
+  })
+  it("should have expected text values", () => {
     expect(wrapper.find("#row-0").text()).toEqual("Row 0")
     expect(wrapper.find("#row-5").text()).toEqual("Row 5")
   })
   it("should not render seventh row", () => {
     expect(wrapper.find("#row-6")).toHaveLength(0)
+  })
+  it("should update rows after scrolling", () => {
+    window.scroll = jest.fn()
+    wrapper
+      .find("#row-0")
+      .simulate("click")
+      .simulate("keyDown", { key: "ArrowDown", keyCode: 40, which: 40 })
+      .simulate("keyDown", { keyCode: 40 })
+    wrapper.update()
+    console.log(wrapper.debug())
   })
 })

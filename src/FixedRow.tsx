@@ -35,12 +35,15 @@ const FixedRow = () => {
     <Paper ref={parentRef} className={classes.container}>
       <List>
         {rowVirtualizer.virtualItems.map((virtualRow) => {
-          console.log(virtualRow)
           return (
             <ListItem
               key={virtualRow.index}
               className={classes.row}
               id={`row-${virtualRow.index}`}
+              onKeyDown={(event) => {
+                console.log(event)
+                window.scroll(virtualRow.start, virtualRow.start)
+              }}
               style={{
                 position: "absolute",
                 top: 0,
