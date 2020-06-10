@@ -6,17 +6,7 @@ import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 
 describe("FixedRow", () => {
-  // const spyRef = jest.spyOn(React, "useRef").mockReturnValue({
-  //   current: {
-  //     scrollTo: jest.fn(),
-  //     scroll: jest.fn(),
-  //   },
-  // })
-  const wrapper = shallow(<FixedRow data={[1, 2, 3, 4, 5]} />)
-
-  // beforeEach(() => {
-  //   jest.clearAllMocks()
-  // })
+  const wrapper = shallow(<FixedRow />)
 
   it("should render outer components", () => {
     expect(wrapper.find(Paper)).toHaveLength(1)
@@ -33,15 +23,10 @@ describe("FixedRow", () => {
     expect(wrapper.find(ListItem)).toHaveLength(6)
   })
   it("should have expected text values", () => {
-    expect(wrapper.find("#row-0").text()).toContain("Row 0")
-    expect(wrapper.find("#row-5").text()).toContain("Row 5")
+    expect(wrapper.find("#row-0").text()).toContain("Row 1")
+    expect(wrapper.find("#row-5").text()).toContain("Row 6")
   })
   it("should not render seventh row", () => {
     expect(wrapper.find("#row-6")).toHaveLength(0)
   })
-  // it("should track scrolling on parent ref", () => {
-  //   wrapper.find(Paper).simulate("scroll")
-  //   console.log(wrapper.debug())
-  // expect(spyRef).toHaveBeenCalledTimes(1)
-  // })
 })
