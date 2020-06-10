@@ -31,3 +31,7 @@ jobs:
         run: yarn install
       - name: run cypress tests
         run: yarn cypress:ci
+      - name: upload coverage to codecov
+        uses: codecov/codecov-action@v1.0.2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
