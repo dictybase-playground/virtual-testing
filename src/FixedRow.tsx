@@ -30,9 +30,9 @@ const FixedRow = () => {
     overscan: 5,
   })
   const classes = useStyles(rowVirtualizer.totalSize)
-
+  console.log(parentRef)
   return (
-    <Paper ref={parentRef} className={classes.container}>
+    <Paper ref={parentRef} id="parent-ref" className={classes.container}>
       <List>
         {rowVirtualizer.virtualItems.map((virtualRow) => {
           return (
@@ -43,7 +43,11 @@ const FixedRow = () => {
               tabIndex={-1} // necessary to use keyDown on <li> element
               onKeyDown={(event) => {
                 console.log(parentRef)
-                parentRef.current && parentRef.current.scroll(0, 100)
+                parentRef.current &&
+                  parentRef.current.scrollTo({
+                    left: 0,
+                    top: 500,
+                  })
               }}
               style={{
                 position: "absolute",
