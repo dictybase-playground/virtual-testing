@@ -4,6 +4,7 @@ import Paper from "@material-ui/core/Paper"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import { makeStyles } from "@material-ui/core/styles"
+import useInfiniteScroll from "./useInfiniteScroll"
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -21,14 +22,20 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-type Props = {
-  data: Array<number>
-  fetchMore: () => void
-  isFetching: any // should be boolean
-}
-
-const FixedRow = ({ data, fetchMore, isFetching }: Props) => {
+const FixedRow = () => {
+  const [data, setData] = React.useState(
+    Array.from(Array(30).keys(), (n) => n + 1),
+  )
+  const fetchMore = React.useCallback(() => {
+    setTimeout(() => {
+      setData((prevState) => [
+        ...prevState,
+        ...Array.from(Array(20).keys(), (n) => n + prevState.length + 1),
+      ])
+    }, 2000)
+  }, [])
   const parentRef = React.useRef<HTMLDivElement>(null)
+  const [isFetching, setIsFetching] = useInfiniteScroll(fetchMore, parentRef)
   const rowVirtualizer = useVirtual({
     size: 100,
     parentRef,
@@ -39,19 +46,25 @@ const FixedRow = ({ data, fetchMore, isFetching }: Props) => {
 
   React.useEffect(() => {
     const [lastItem] = [...rowVirtualizer.virtualItems].reverse()
-
     if (!lastItem) {
       return
     }
-
     if (
       lastItem.index === data.length - 1 &&
       // canFetchMore &&
       !isFetching
     ) {
       fetchMore()
+      // @ts-ignore
+      setIsFetching(false)
     }
-  }, [data.length, fetchMore, isFetching, rowVirtualizer.virtualItems])
+  }, [
+    data.length,
+    fetchMore,
+    isFetching,
+    rowVirtualizer.virtualItems,
+    setIsFetching,
+  ])
 
   return (
     <Paper ref={parentRef} id="parent-ref" className={classes.container}>
