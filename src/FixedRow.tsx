@@ -90,7 +90,7 @@ const FixedRow = () => {
                 // virtualRow.start is incremented by 35 each time here
                 transform: `translateY(${virtualRow.start}px)`,
               }}>
-              {isLoaderRow ? "Loading more..." : item}
+              {isLoaderRow ? "Loading more..." : `Row ${item}`}
             </ListItem>
           )
         })}
