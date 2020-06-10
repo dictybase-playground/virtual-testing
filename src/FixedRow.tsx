@@ -40,15 +40,6 @@ const FixedRow = () => {
               key={virtualRow.index}
               className={classes.row}
               id={`row-${virtualRow.index}`}
-              tabIndex={-1} // necessary to use keyDown on <li> element
-              onKeyDown={(event) => {
-                console.log(parentRef)
-                parentRef.current &&
-                  parentRef.current.scrollTo({
-                    left: 0,
-                    top: 500,
-                  })
-              }}
               style={{
                 position: "absolute",
                 top: 0,
