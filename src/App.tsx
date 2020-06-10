@@ -1,8 +1,8 @@
 import React from "react"
 import Grid from "@material-ui/core/Grid"
 import { makeStyles } from "@material-ui/core/styles"
-import FixedRow from "./FixedRow"
-import useInfiniteScroll from "./useInfiniteScroll"
+import FixedRow from "../src/FixedRow"
+import useInfiniteScroll from "../src/useInfiniteScroll"
 
 const useStyles = makeStyles({
   layout: {
@@ -13,7 +13,7 @@ const useStyles = makeStyles({
 })
 
 const App = () => {
-  const fetchMoreListItems = () => {
+  const fetchMore = () => {
     setTimeout(() => {
       setListItems((prevState) => [
         ...prevState,
@@ -26,13 +26,17 @@ const App = () => {
   const [listItems, setListItems] = React.useState(
     Array.from(Array(30).keys(), (n) => n + 1),
   )
-  const [, setIsFetching] = useInfiniteScroll(fetchMoreListItems)
+  const [isFetching, setIsFetching] = useInfiniteScroll(fetchMore)
   const classes = useStyles()
 
   return (
     <Grid container className={classes.layout}>
       <Grid item xs={12}>
-        <FixedRow data={listItems} />
+        <FixedRow
+          data={listItems}
+          fetchMore={fetchMore}
+          isFetching={isFetching}
+        />
       </Grid>
     </Grid>
   )
