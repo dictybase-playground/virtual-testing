@@ -21,25 +21,51 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-const FixedRow = ({ data }: { data: any }) => {
+type Props = {
+  data: Array<number>
+  fetchMore: () => void
+  isFetching: any // should be boolean
+}
+
+const FixedRow = ({ data, fetchMore, isFetching }: Props) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
   const rowVirtualizer = useVirtual({
-    size: data.length,
+    size: 100,
     parentRef,
     estimateSize: React.useCallback(() => 35, []),
     overscan: 5,
   })
-  const classes = useStyles(rowVirtualizer.totalSize)
+  const classes = useStyles()
+
+  React.useEffect(() => {
+    const [lastItem] = [...rowVirtualizer.virtualItems].reverse()
+
+    if (!lastItem) {
+      return
+    }
+
+    if (
+      lastItem.index === data.length - 1 &&
+      // canFetchMore &&
+      !isFetching
+    ) {
+      fetchMore()
+    }
+  }, [data.length, fetchMore, isFetching, rowVirtualizer.virtualItems])
 
   return (
     <Paper ref={parentRef} id="parent-ref" className={classes.container}>
       <List>
         {rowVirtualizer.virtualItems.map((virtualRow) => {
+          const isLoaderRow = virtualRow.index > data.length - 1
+          const index = virtualRow.index
+          const item = data[index]
+
           return (
             <ListItem
-              key={virtualRow.index}
+              key={index}
               className={classes.row}
-              id={`row-${virtualRow.index}`}
+              id={`row-${index}`}
               style={{
                 position: "absolute",
                 top: 0,
@@ -51,7 +77,7 @@ const FixedRow = ({ data }: { data: any }) => {
                 // virtualRow.start is incremented by 35 each time here
                 transform: `translateY(${virtualRow.start}px)`,
               }}>
-              Row {virtualRow.index} &nbsp; Data index {data[virtualRow.index]}
+              {isLoaderRow ? "Loading more..." : item}
             </ListItem>
           )
         })}

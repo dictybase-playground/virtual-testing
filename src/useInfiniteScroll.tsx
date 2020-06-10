@@ -21,6 +21,7 @@ const useInfiniteScroll = (callback: () => any) => {
     if (!isFetching) return
     callback()
     console.log("called back")
+    // setIsFetching(false)
   }, [callback, isFetching])
 
   return [isFetching, setIsFetching]
