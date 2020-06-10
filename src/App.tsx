@@ -1,8 +1,8 @@
 import React from "react"
 import Grid from "@material-ui/core/Grid"
 import { makeStyles } from "@material-ui/core/styles"
-import FixedRow from "../src/FixedRow"
-import useInfiniteScroll from "../src/useInfiniteScroll"
+import FixedRow from "./FixedRow"
+import useInfiniteScroll from "./useInfiniteScroll"
 
 const useStyles = makeStyles({
   layout: {
