@@ -1,13 +1,16 @@
 import React from "react"
 
-const useInfiniteScroll = (callback: () => any) => {
+const useInfiniteScroll = (
+  callback: () => any,
+  parentRef: React.MutableRefObject<any>,
+) => {
   const [isFetching, setIsFetching] = React.useState(false)
 
   React.useEffect(() => {
     const handleScroll = () => {
       if (
-        window.innerHeight + document.documentElement.scrollTop !==
-          document.documentElement.offsetHeight ||
+        window.innerHeight + parentRef.current.scrollTop !==
+          parentRef.current.offsetHeight ||
         isFetching
       )
         return
@@ -15,7 +18,7 @@ const useInfiniteScroll = (callback: () => any) => {
     }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [isFetching])
+  }, [isFetching, parentRef])
 
   React.useEffect(() => {
     if (!isFetching) return
