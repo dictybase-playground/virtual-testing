@@ -39,9 +39,9 @@ describe("FixedRow", () => {
   it("should not render seventh row", () => {
     expect(wrapper.find("#row-6")).toHaveLength(0)
   })
-  it("should track scrolling on parent ref", () => {
-    wrapper.find(Paper).simulate("scroll")
-    console.log(wrapper.debug())
-    // expect(spyRef).toHaveBeenCalledTimes(1)
-  })
+  // it("should track scrolling on parent ref", () => {
+  //   wrapper.find(Paper).simulate("scroll")
+  //   console.log(wrapper.debug())
+  // expect(spyRef).toHaveBeenCalledTimes(1)
+  // })
 })
