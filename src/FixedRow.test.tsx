@@ -6,6 +6,9 @@ import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 
 describe("FixedRow", () => {
+  jest
+    .spyOn(React, "useRef")
+    .mockReturnValueOnce({ current: document.createElement("div") })
   const wrapper = shallow(<FixedRow />)
   it("should render outer components", () => {
     expect(wrapper.find(Paper)).toHaveLength(1)
@@ -28,13 +31,10 @@ describe("FixedRow", () => {
   it("should not render seventh row", () => {
     expect(wrapper.find("#row-6")).toHaveLength(0)
   })
-  it("should update rows after scrolling", () => {
-    window.scroll = jest.fn()
+  it("should update rows on keydown", () => {
     wrapper
-      .find("#row-0")
-      .simulate("click")
+      .find("#row-5")
       .simulate("keyDown", { key: "ArrowDown", keyCode: 40, which: 40 })
-      .simulate("keyDown", { keyCode: 40 })
     wrapper.update()
     console.log(wrapper.debug())
   })
