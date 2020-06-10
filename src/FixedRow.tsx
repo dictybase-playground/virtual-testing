@@ -21,16 +21,16 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-const FixedRow = () => {
+const FixedRow = ({ data }: { data: any }) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
   const rowVirtualizer = useVirtual({
-    size: 10000,
+    size: data.length,
     parentRef,
     estimateSize: React.useCallback(() => 35, []),
     overscan: 5,
   })
   const classes = useStyles(rowVirtualizer.totalSize)
-  console.log(parentRef)
+
   return (
     <Paper ref={parentRef} id="parent-ref" className={classes.container}>
       <List>
@@ -51,7 +51,7 @@ const FixedRow = () => {
                 // virtualRow.start is incremented by 35 each time here
                 transform: `translateY(${virtualRow.start}px)`,
               }}>
-              Row {virtualRow.index}
+              Row {virtualRow.index} &nbsp; Data index {data[virtualRow.index]}
             </ListItem>
           )
         })}
