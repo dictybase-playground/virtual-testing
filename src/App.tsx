@@ -28,9 +28,9 @@ const client = new ApolloClient({
 
 const useStyles = makeStyles({
   layout: {
-    width: "85%",
+    width: "50%",
     margin: "auto",
-    paddingTop: "100px",
+    paddingTop: "80px",
   },
 })
 

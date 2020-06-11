@@ -32,7 +32,7 @@ type Props = {
 
 const StrainVirtualList = ({ data, loadMore, hasMore }: Props) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
-  const [isFetching, setIsFetching] = useInfiniteScroll(loadMore, parentRef)
+  const [isFetching] = useInfiniteScroll(loadMore, parentRef)
   const rowVirtualizer = useVirtual({
     size: hasMore ? data.length + 1 : data.length,
     parentRef,
