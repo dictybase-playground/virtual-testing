@@ -27,9 +27,10 @@ type Props = {
     label: string
   }>
   loadMore: () => void
+  hasMore: boolean
 }
 
-const StrainVirtualList = ({ data, loadMore }: Props) => {
+const StrainVirtualList = ({ data, loadMore, hasMore }: Props) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
   const [isFetching, setIsFetching] = useInfiniteScroll(loadMore, parentRef)
   const rowVirtualizer = useVirtual({
@@ -41,26 +42,10 @@ const StrainVirtualList = ({ data, loadMore }: Props) => {
   const classes = useStyles()
 
   React.useEffect(() => {
-    const [lastItem] = [...rowVirtualizer.virtualItems].reverse()
-    if (!lastItem) {
-      return
-    }
-    if (
-      lastItem.index === data.length - 1 &&
-      // canFetchMore &&
-      !isFetching
-    ) {
+    if (hasMore) {
       loadMore()
-      // @ts-ignore
-      setIsFetching(false)
     }
-  }, [
-    data.length,
-    isFetching,
-    loadMore,
-    rowVirtualizer.virtualItems,
-    setIsFetching,
-  ])
+  }, [hasMore, loadMore])
 
   return (
     <Paper ref={parentRef} id="parent-ref" className={classes.container}>

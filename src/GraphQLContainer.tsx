@@ -20,7 +20,10 @@ const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
   }
 `
 
+// abolished protein phosphorylation
+
 const GraphQLContainer = () => {
+  const [hasMore, setHasMore] = React.useState(true)
   const { loading, error, data, fetchMore } = useQuery(
     GET_STRAIN_LIST_WITH_PHENOTYPE,
     {
@@ -51,8 +54,7 @@ const GraphQLContainer = () => {
         const allStrains = [...previousStrains, ...newStrains]
 
         if (newCursor === 0) {
-          // need to fix this
-          return previousResult
+          setHasMore(false)
         }
 
         return {
@@ -69,6 +71,7 @@ const GraphQLContainer = () => {
     <StrainVirtualList
       data={data.listStrainsWithPhenotype.strains}
       loadMore={loadMoreItems}
+      hasMore={hasMore}
     />
   )
 }
