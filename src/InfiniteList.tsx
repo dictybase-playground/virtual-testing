@@ -7,7 +7,7 @@ import useInfiniteScroll from "./useInfiniteScroll"
 
 const useStyles = makeStyles(() => ({
   container: {
-    height: "200px",
+    height: "300px",
     overflow: "auto",
   },
   row: {
@@ -30,7 +30,7 @@ type Props = {
 }
 
 const InfiniteList = ({ data, loadMore, hasMore }: Props) => {
-  const parentRef = React.useRef(null)
+  const parentRef = React.useRef<HTMLUListElement>(null)
   const [isFetching, setIsFetching] = useInfiniteScroll(
     loadMore,
     parentRef,
@@ -39,11 +39,11 @@ const InfiniteList = ({ data, loadMore, hasMore }: Props) => {
   const classes = useStyles()
 
   return (
-    <Paper ref={parentRef} id="parent-ref" className={classes.container}>
-      <List>
+    <Paper className={classes.container}>
+      <List ref={parentRef} id="parent-ref">
         {data.map((item, index) => (
           <ListItem key={index} className={classes.row}>
-            {item.label}}
+            {item.label}
           </ListItem>
         ))}
       </List>
