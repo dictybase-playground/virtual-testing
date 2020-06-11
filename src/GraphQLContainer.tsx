@@ -1,6 +1,7 @@
 import React from "react"
 import { useQuery } from "@apollo/react-hooks"
 import gql from "graphql-tag"
+import StrainVirtualList from "./StrainVirtualList"
 
 const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
   query ListStrainsWithPhenotype(
@@ -50,6 +51,7 @@ const GraphQLContainer = () => {
         const allStrains = [...previousStrains, ...newStrains]
 
         if (newCursor === 0) {
+          // need to fix this
           return previousResult
         }
 
@@ -63,11 +65,12 @@ const GraphQLContainer = () => {
       },
     })
 
-  return data.listStrainsWithPhenotype.strains.map((item: any) => (
-    <div key={item.label}>
-      <p>{item.label}</p>
-    </div>
-  ))
+  return (
+    <StrainVirtualList
+      data={data.listStrainsWithPhenotype.strains}
+      loadMore={loadMoreItems}
+    />
+  )
 }
 
 export default GraphQLContainer
