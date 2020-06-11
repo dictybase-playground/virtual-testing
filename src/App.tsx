@@ -6,7 +6,7 @@ import { createHttpLink } from "apollo-link-http"
 import { setContext } from "apollo-link-context"
 import Grid from "@material-ui/core/Grid"
 import { makeStyles } from "@material-ui/core/styles"
-import FixedRow from "./FixedRow"
+// import FixedRow from "./FixedRow"
 import GraphQLContainer from "./GraphQLContainer"
 
 const client = new ApolloClient({
@@ -43,9 +43,9 @@ const App = () => {
         <Grid item xs={12}>
           <GraphQLContainer />
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <FixedRow />
-        </Grid>
+        </Grid> */}
       </Grid>
     </ApolloProvider>
   )
