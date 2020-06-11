@@ -3,6 +3,7 @@ import React from "react"
 const useInfiniteScroll = (
   callback: () => any,
   parentRef: React.MutableRefObject<any>,
+  hasMore: boolean,
 ) => {
   const [isFetching, setIsFetching] = React.useState(false)
 
@@ -24,7 +25,7 @@ const useInfiniteScroll = (
     if (!isFetching) return
     callback()
     console.log("called back")
-    // setIsFetching(false)
+    setIsFetching(false)
   }, [callback, isFetching])
 
   return [isFetching, setIsFetching] as const
