@@ -34,18 +34,22 @@ const StrainVirtualList = ({ data, loadMore, hasMore }: Props) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
   const [isFetching, setIsFetching] = useInfiniteScroll(loadMore, parentRef)
   const rowVirtualizer = useVirtual({
-    size: data.length,
+    size: hasMore ? data.length + 1 : data.length,
     parentRef,
-    estimateSize: React.useCallback(() => 35, []),
+    estimateSize: React.useCallback(() => 50, []),
     overscan: 5,
   })
   const classes = useStyles()
 
   React.useEffect(() => {
-    if (hasMore) {
+    const [lastItem] = [...rowVirtualizer.virtualItems].reverse()
+    if (!lastItem) {
+      return
+    }
+    if (lastItem.index === data.length - 1 && hasMore && !isFetching) {
       loadMore()
     }
-  }, [hasMore, loadMore])
+  }, [data.length, hasMore, isFetching, loadMore, rowVirtualizer.virtualItems])
 
   return (
     <Paper ref={parentRef} id="parent-ref" className={classes.container}>
@@ -54,7 +58,6 @@ const StrainVirtualList = ({ data, loadMore, hasMore }: Props) => {
           const isLoaderRow = virtualRow.index > data.length - 1
           const index = virtualRow.index
           const item = data[index]
-
           return (
             <ListItem
               key={index}
@@ -68,7 +71,11 @@ const StrainVirtualList = ({ data, loadMore, hasMore }: Props) => {
                 height: `${virtualRow.size}px`,
                 transform: `translateY(${virtualRow.start}px)`,
               }}>
-              {isLoaderRow ? "Loading more..." : `${item.label}`}
+              {isLoaderRow
+                ? hasMore
+                  ? "Loading more..."
+                  : "Nothing more to load"
+                : `${item.label}`}
             </ListItem>
           )
         })}
