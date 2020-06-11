@@ -8,25 +8,29 @@ const useInfiniteScroll = (
   const [isFetching, setIsFetching] = React.useState(false)
 
   React.useEffect(() => {
+    const container = parentRef.current
+    console.log(container)
     const handleScroll = () => {
       if (
-        window.innerHeight + parentRef.current.scrollTop !==
-          parentRef.current.offsetHeight ||
+        container.scrollHeight - container.scrollTop ===
+          container.clientHeight ||
         isFetching
-      )
+      ) {
+        console.log("equals")
         return
+      }
       setIsFetching(true)
     }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    container.addEventListener("scroll", handleScroll)
+    return () => container.removeEventListener("scroll", handleScroll)
   }, [isFetching, parentRef])
 
   React.useEffect(() => {
-    if (!isFetching) return
-    callback()
+    if (!isFetching && !hasMore) return
+    // callback()
     console.log("called back")
     setIsFetching(false)
-  }, [callback, isFetching])
+  }, [callback, hasMore, isFetching])
 
   return [isFetching, setIsFetching] as const
 }
