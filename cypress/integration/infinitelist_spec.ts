@@ -1,11 +1,11 @@
 /// <reference types="cypress" />
 
-describe("FixedRow", () => {
+describe("InfiniteList", () => {
   it("shows more rows on scroll", () => {
     cy.visit("/")
-    cy.contains("Row 1")
+    cy.contains("cytB-")
     cy.get("#parent-ref").scrollTo(0, 500)
-    cy.contains("Row 10")
-    cy.get("#row-12").should("not.exist")
+    cy.contains("gnt15-")
+    cy.get("#row-20").should("not.exist")
   })
 })

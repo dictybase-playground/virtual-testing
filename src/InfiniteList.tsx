@@ -38,7 +38,7 @@ const InfiniteList = ({ data, loadMore, hasMore }: Props) => {
     <Paper className={classes.container} ref={parentRef} id="parent-ref">
       <List>
         {data.map((item, index) => (
-          <ListItem key={index} className={classes.row}>
+          <ListItem key={index} id={`row-${index}`} className={classes.row}>
             {item.label}
           </ListItem>
         ))}
