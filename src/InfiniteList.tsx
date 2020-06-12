@@ -30,17 +30,13 @@ type Props = {
 }
 
 const InfiniteList = ({ data, loadMore, hasMore }: Props) => {
-  const parentRef = React.useRef<HTMLUListElement>(null)
-  const [isFetching, setIsFetching] = useInfiniteScroll(
-    loadMore,
-    parentRef,
-    hasMore,
-  )
+  const parentRef = React.useRef<HTMLDivElement>(null)
+  const [isFetching] = useInfiniteScroll(loadMore, parentRef, hasMore)
   const classes = useStyles()
 
   return (
-    <Paper className={classes.container}>
-      <List ref={parentRef} id="parent-ref">
+    <Paper className={classes.container} ref={parentRef} id="parent-ref">
+      <List>
         {data.map((item, index) => (
           <ListItem key={index} className={classes.row}>
             {item.label}

@@ -9,14 +9,10 @@ const useInfiniteScroll = (
 
   React.useEffect(() => {
     const container = parentRef.current
-    console.log(container)
     const handleScroll = () => {
-      if (
-        container.scrollHeight - container.scrollTop ===
-          container.clientHeight ||
-        isFetching
-      ) {
-        console.log("equals")
+      const bottomOfContainer =
+        container.scrollHeight - container.scrollTop === container.clientHeight
+      if (!bottomOfContainer || isFetching) {
         return
       }
       setIsFetching(true)
@@ -26,9 +22,8 @@ const useInfiniteScroll = (
   }, [isFetching, parentRef])
 
   React.useEffect(() => {
-    if (!isFetching && !hasMore) return
-    // callback()
-    console.log("called back")
+    if (!isFetching || !hasMore) return
+    callback()
     setIsFetching(false)
   }, [callback, hasMore, isFetching])
 
