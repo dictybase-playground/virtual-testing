@@ -18,15 +18,17 @@ const useIntersecting = ({
   const [intersecting, setIntersecting] = React.useState(false)
 
   React.useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIntersecting(entry.isIntersecting)
-        if (intersecting && hasMore) {
-          loadMore()
-        }
-      },
-      { rootMargin: rootMargin, threshold: threshold },
-    )
+    const callback = (entries: IntersectionObserverEntry[]) => {
+      setIntersecting(entries[0].isIntersecting)
+      if (intersecting && hasMore) {
+        loadMore()
+      }
+    }
+
+    const observer = new IntersectionObserver(callback, {
+      rootMargin: rootMargin,
+      threshold: threshold,
+    })
     const target = ref.current
 
     if (ref) {
