@@ -6,6 +6,7 @@ type ConfigParams = {
   threshold?: number
   loadMore: () => void
   hasMore: boolean
+  setIsLoadingMore: (arg0: boolean) => void
 }
 
 const useIntersecting = ({
@@ -14,6 +15,7 @@ const useIntersecting = ({
   threshold = 0.25,
   loadMore,
   hasMore,
+  setIsLoadingMore,
 }: ConfigParams) => {
   const [intersecting, setIntersecting] = React.useState(false)
 
@@ -21,6 +23,7 @@ const useIntersecting = ({
     const callback = (entries: IntersectionObserverEntry[]) => {
       setIntersecting(entries[0].isIntersecting)
       if (intersecting && hasMore) {
+        setIsLoadingMore(true)
         loadMore()
       }
     }
@@ -37,7 +40,15 @@ const useIntersecting = ({
 
     // Clean up callback
     return () => observer.unobserve(target)
-  }, [hasMore, intersecting, loadMore, ref, rootMargin, threshold])
+  }, [
+    hasMore,
+    intersecting,
+    loadMore,
+    ref,
+    rootMargin,
+    setIsLoadingMore,
+    threshold,
+  ])
   return intersecting
 }
 

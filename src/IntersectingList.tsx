@@ -31,14 +31,23 @@ type Props = {
   }>
   loadMore: () => void
   hasMore: boolean
+  isLoadingMore: boolean
+  setIsLoadingMore: (arg0: boolean) => void
 }
 
-const IntersectingList = ({ data, loadMore, hasMore }: Props) => {
+const IntersectingList = ({
+  data,
+  loadMore,
+  hasMore,
+  isLoadingMore,
+  setIsLoadingMore,
+}: Props) => {
   const targetRef = React.useRef<HTMLDivElement>(null)
   const visible = useIntersecting({
     ref: targetRef,
     loadMore,
     hasMore,
+    setIsLoadingMore,
   })
   const classes = useStyles()
 
@@ -52,7 +61,7 @@ const IntersectingList = ({ data, loadMore, hasMore }: Props) => {
             {item.label}
           </ListItem>
         ))}
-        {!visible && (
+        {isLoadingMore && (
           <ListItem className={classes.loading}>
             Fetching more list items...
           </ListItem>
