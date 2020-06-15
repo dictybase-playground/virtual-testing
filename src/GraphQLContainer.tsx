@@ -3,54 +3,64 @@ import { useQuery } from "@apollo/react-hooks"
 import gql from "graphql-tag"
 import InfiniteList from "./InfiniteList"
 
-const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
-  query ListStrainsWithPhenotype(
-    $cursor: Int!
-    $limit: Int!
-    $phenotype: String!
-  ) {
-    listStrainsWithPhenotype(
-      input: { cursor: $cursor, limit: $limit, phenotype: $phenotype }
-    ) {
+// const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
+//   query ListStrainsWithPhenotype(
+//     $cursor: Int!
+//     $limit: Int!
+//     $phenotype: String!
+//   ) {
+//     listStrainsWithPhenotype(
+//       input: { cursor: $cursor, limit: $limit, phenotype: $phenotype }
+//     ) {
+//       nextCursor
+//       strains {
+//         label
+//       }
+//     }
+//   }
+// `
+
+// another phenotype example:
+// abolished protein phosphorylation
+
+const GET_STRAIN_LIST = gql`
+  query StrainList($cursor: Int!, $limit: Int!, $filter: String!) {
+    listStrains(input: { cursor: $cursor, limit: $limit, filter: $filter }) {
       nextCursor
       strains {
+        id
         label
       }
     }
   }
 `
 
-// abolished protein phosphorylation
-
 const GraphQLContainer = () => {
   const [hasMore, setHasMore] = React.useState(true)
-  const { loading, error, data, fetchMore } = useQuery(
-    GET_STRAIN_LIST_WITH_PHENOTYPE,
-    {
-      variables: {
-        cursor: 0,
-        limit: 10,
-        phenotype: "decreased gene expression",
-      },
+  const { loading, error, data, fetchMore } = useQuery(GET_STRAIN_LIST, {
+    variables: {
+      cursor: 0,
+      limit: 10,
+      filter: "",
     },
-  )
+  })
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
 
   const loadMoreItems = () =>
     fetchMore({
-      query: GET_STRAIN_LIST_WITH_PHENOTYPE,
+      query: GET_STRAIN_LIST,
       variables: {
-        cursor: data.listStrainsWithPhenotype.nextCursor,
+        cursor: data.listStrains.nextCursor,
         limit: 10,
-        phenotype: "decreased gene expression",
+        filter: "",
       },
       updateQuery: (previousResult: any, { fetchMoreResult }: any) => {
-        const previousEntry = previousResult.listStrainsWithPhenotype
+        const previousEntry = previousResult.listStrains
         const previousStrains = previousEntry.strains
-        const newStrains = fetchMoreResult.listStrainsWithPhenotype.strains
-        const newCursor = fetchMoreResult.listStrainsWithPhenotype.nextCursor
+        const newStrains = fetchMoreResult.listStrains.strains
+        const newCursor = fetchMoreResult.listStrains.nextCursor
         const allStrains = [...previousStrains, ...newStrains]
 
         if (newCursor === 0) {
@@ -58,7 +68,7 @@ const GraphQLContainer = () => {
         }
 
         return {
-          listStrainsWithPhenotype: {
+          listStrains: {
             nextCursor: newCursor,
             strains: allStrains,
             __typename: previousEntry.__typename,
@@ -69,7 +79,7 @@ const GraphQLContainer = () => {
 
   return (
     <InfiniteList
-      data={data.listStrainsWithPhenotype.strains}
+      data={data.listStrains.strains}
       loadMore={loadMoreItems}
       hasMore={hasMore}
     />
