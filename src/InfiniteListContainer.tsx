@@ -1,31 +1,11 @@
 import React from "react"
 import { useQuery } from "@apollo/react-hooks"
 import InfiniteList from "./InfiniteList"
-import GET_STRAIN_LIST from "./query"
-
-// const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
-//   query ListStrainsWithPhenotype(
-//     $cursor: Int!
-//     $limit: Int!
-//     $phenotype: String!
-//   ) {
-//     listStrainsWithPhenotype(
-//       input: { cursor: $cursor, limit: $limit, phenotype: $phenotype }
-//     ) {
-//       nextCursor
-//       strains {
-//         label
-//       }
-//     }
-//   }
-// `
-
-// another phenotype example:
-// abolished protein phosphorylation
+import { GET_PLASMID_LIST } from "./query"
 
 const InfiniteScrollContainer = () => {
   const [hasMore, setHasMore] = React.useState(true)
-  const { loading, error, data, fetchMore } = useQuery(GET_STRAIN_LIST, {
+  const { loading, error, data, fetchMore } = useQuery(GET_PLASMID_LIST, {
     variables: {
       cursor: 0,
       limit: 10,
@@ -38,27 +18,27 @@ const InfiniteScrollContainer = () => {
 
   const loadMoreItems = () =>
     fetchMore({
-      query: GET_STRAIN_LIST,
+      query: GET_PLASMID_LIST,
       variables: {
-        cursor: data.listStrains.nextCursor,
+        cursor: data.listPlasmids.nextCursor,
         limit: 10,
         filter: "",
       },
       updateQuery: (previousResult: any, { fetchMoreResult }: any) => {
-        const previousEntry = previousResult.listStrains
-        const previousStrains = previousEntry.strains
-        const newStrains = fetchMoreResult.listStrains.strains
-        const newCursor = fetchMoreResult.listStrains.nextCursor
-        const allStrains = [...previousStrains, ...newStrains]
+        const previousEntry = previousResult.listPlasmids
+        const previousPlasmids = previousEntry.plasmids
+        const newPlasmids = fetchMoreResult.listPlasmids.plasmids
+        const newCursor = fetchMoreResult.listPlasmids.nextCursor
+        const allPlasmids = [...previousPlasmids, ...newPlasmids]
 
         if (newCursor === 0) {
           setHasMore(false)
         }
 
         return {
-          listStrains: {
+          listPlasmids: {
             nextCursor: newCursor,
-            strains: allStrains,
+            plasmids: allPlasmids,
             __typename: previousEntry.__typename,
           },
         }
@@ -67,7 +47,7 @@ const InfiniteScrollContainer = () => {
 
   return (
     <InfiniteList
-      data={data.listStrains.strains}
+      data={data.listPlasmids.plasmids}
       loadMore={loadMoreItems}
       hasMore={hasMore}
     />

@@ -1,7 +1,7 @@
 import React from "react"
 import { useQuery } from "@apollo/react-hooks"
 import IntersectingList from "./IntersectingList"
-import GET_STRAIN_LIST from "./query"
+import { GET_STRAIN_LIST } from "./query"
 
 // const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
 //   query ListStrainsWithPhenotype(
