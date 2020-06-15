@@ -31,7 +31,6 @@ type Props = {
 }
 
 const IntersectingList = ({ data, loadMore, hasMore }: Props) => {
-  const parentRef = React.useRef<HTMLDivElement>(null)
   const targetRef = React.useRef<HTMLDivElement>(null)
   const visible = useIntersecting({
     ref: targetRef,
@@ -45,7 +44,7 @@ const IntersectingList = ({ data, loadMore, hasMore }: Props) => {
   }, [hasMore, loadMore, visible])
 
   return (
-    <Paper className={classes.container} ref={parentRef} id="parent-ref">
+    <Paper className={classes.container} id="parent-ref">
       <List>
         {data.map((item, index) => (
           <ListItem key={index} id={`row-${index}`} className={classes.row}>
