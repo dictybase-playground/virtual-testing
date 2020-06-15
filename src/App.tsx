@@ -6,7 +6,8 @@ import { createHttpLink } from "apollo-link-http"
 import { setContext } from "apollo-link-context"
 import Grid from "@material-ui/core/Grid"
 import { makeStyles } from "@material-ui/core/styles"
-import GraphQLContainer from "./GraphQLContainer"
+import { BrowserRouter, Link } from "react-router-dom"
+import Routes from "./Routes"
 
 const client = new ApolloClient({
   link: setContext((request, { headers }) => {
@@ -31,6 +32,9 @@ const useStyles = makeStyles({
     margin: "auto",
     paddingTop: "80px",
   },
+  link: {
+    paddingRight: "15px",
+  },
 })
 
 const App = () => {
@@ -38,11 +42,19 @@ const App = () => {
 
   return (
     <ApolloProvider client={client}>
-      <Grid container className={classes.layout}>
-        <Grid item xs={12}>
-          <GraphQLContainer />
+      <BrowserRouter>
+        <Grid container className={classes.layout}>
+          <Grid item xs={12}>
+            <Link to="/use-intersecting" className={classes.link}>
+              Use Intersecting
+            </Link>
+            <Link to="/use-infinite-scroll" className={classes.link}>
+              Use Infinite Scroll
+            </Link>
+            <Routes />
+          </Grid>
         </Grid>
-      </Grid>
+      </BrowserRouter>
     </ApolloProvider>
   )
 }

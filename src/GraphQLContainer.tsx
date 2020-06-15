@@ -1,7 +1,8 @@
 import React from "react"
 import { useQuery } from "@apollo/react-hooks"
 import gql from "graphql-tag"
-// import InfiniteList from "./InfiniteList"
+import { useParams } from "react-router-dom"
+import InfiniteList from "./InfiniteList"
 import IntersectingList from "./IntersectingList"
 
 // const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
@@ -45,6 +46,7 @@ const GraphQLContainer = () => {
       filter: "",
     },
   })
+  const { type } = useParams()
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
@@ -78,18 +80,26 @@ const GraphQLContainer = () => {
       },
     })
 
-  return (
-    // <InfiniteList
-    //   data={data.listStrains.strains}
-    //   loadMore={loadMoreItems}
-    //   hasMore={hasMore}
-    // />
-    <IntersectingList
-      data={data.listStrains.strains}
-      loadMore={loadMoreItems}
-      hasMore={hasMore}
-    />
-  )
+  switch (type) {
+    case "use-infinite-scroll":
+      return (
+        <InfiniteList
+          data={data.listStrains.strains}
+          loadMore={loadMoreItems}
+          hasMore={hasMore}
+        />
+      )
+    case "use-intersecting":
+      return (
+        <IntersectingList
+          data={data.listStrains.strains}
+          loadMore={loadMoreItems}
+          hasMore={hasMore}
+        />
+      )
+    default:
+      return <div>nonexistent route</div>
+  }
 }
 
 export default GraphQLContainer
