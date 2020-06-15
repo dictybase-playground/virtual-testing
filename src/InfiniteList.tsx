@@ -23,6 +23,7 @@ const useStyles = makeStyles(() => ({
 
 type Props = {
   data: Array<{
+    id: string
     label: string
   }>
   loadMore: () => void
@@ -39,6 +40,8 @@ const InfiniteList = ({ data, loadMore, hasMore }: Props) => {
       <List>
         {data.map((item, index) => (
           <ListItem key={index} id={`row-${index}`} className={classes.row}>
+            <strong>ID:</strong>&nbsp;{item.id} &nbsp;
+            <strong>Descriptor:</strong>&nbsp;
             {item.label}
           </ListItem>
         ))}
