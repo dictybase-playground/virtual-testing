@@ -1,7 +1,8 @@
 import React from "react"
 import { useQuery } from "@apollo/react-hooks"
 import gql from "graphql-tag"
-import InfiniteList from "./InfiniteList"
+// import InfiniteList from "./InfiniteList"
+import IntersectingList from "./IntersectingList"
 
 // const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
 //   query ListStrainsWithPhenotype(
@@ -78,7 +79,12 @@ const GraphQLContainer = () => {
     })
 
   return (
-    <InfiniteList
+    // <InfiniteList
+    //   data={data.listStrains.strains}
+    //   loadMore={loadMoreItems}
+    //   hasMore={hasMore}
+    // />
+    <IntersectingList
       data={data.listStrains.strains}
       loadMore={loadMoreItems}
       hasMore={hasMore}
