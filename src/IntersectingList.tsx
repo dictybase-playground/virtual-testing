@@ -7,7 +7,7 @@ import useIntersecting from "./useIntersecting"
 
 const useStyles = makeStyles(() => ({
   container: {
-    height: "300px",
+    height: "310px",
     overflow: "auto",
   },
   row: {
@@ -18,6 +18,9 @@ const useStyles = makeStyles(() => ({
         "inset 1px 0 0 #dadce0,inset -1px 0 0 #dadce0,0 1px 2px 0 rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15)",
       zIndex: 1,
     },
+  },
+  loading: {
+    color: "tomato",
   },
 }))
 
@@ -34,14 +37,10 @@ const IntersectingList = ({ data, loadMore, hasMore }: Props) => {
   const targetRef = React.useRef<HTMLDivElement>(null)
   const visible = useIntersecting({
     ref: targetRef,
+    loadMore,
+    hasMore,
   })
   const classes = useStyles()
-
-  React.useEffect(() => {
-    if (visible && hasMore) {
-      loadMore()
-    }
-  }, [hasMore, loadMore, visible])
 
   return (
     <Paper className={classes.container} id="parent-ref">
@@ -53,9 +52,13 @@ const IntersectingList = ({ data, loadMore, hasMore }: Props) => {
             {item.label}
           </ListItem>
         ))}
+        {!visible && (
+          <ListItem className={classes.loading}>
+            Fetching more list items...
+          </ListItem>
+        )}
         <div ref={targetRef} />
       </List>
-      {/* {isFetching && "Fetching more list items..."} */}
     </Paper>
   )
 }

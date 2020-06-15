@@ -4,12 +4,16 @@ type ConfigParams = {
   ref: React.MutableRefObject<any>
   rootMargin?: string
   threshold?: number
+  loadMore: () => void
+  hasMore: boolean
 }
 
 const useIntersecting = ({
   ref,
   rootMargin = "0px",
   threshold = 0.25,
+  loadMore,
+  hasMore,
 }: ConfigParams) => {
   const [intersecting, setIntersecting] = React.useState(false)
 
@@ -17,6 +21,9 @@ const useIntersecting = ({
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIntersecting(entry.isIntersecting)
+        if (intersecting && hasMore) {
+          loadMore()
+        }
       },
       { rootMargin: rootMargin, threshold: threshold },
     )
@@ -28,7 +35,7 @@ const useIntersecting = ({
 
     // Clean up callback
     return () => observer.unobserve(target)
-  }, [ref, rootMargin, threshold])
+  }, [hasMore, intersecting, loadMore, ref, rootMargin, threshold])
   return intersecting
 }
 
