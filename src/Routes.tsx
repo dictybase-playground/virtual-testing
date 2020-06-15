@@ -1,12 +1,16 @@
 import React from "react"
 import { Switch, Route } from "react-router-dom"
-import GraphQLContainer from "./GraphQLContainer"
+import IntersectingListContainer from "./IntersectingListContainer"
+import InfiniteListContainer from "./InfiniteListContainer"
 
 const Routes = () => {
   return (
     <Switch>
-      <Route path="/:type">
-        <GraphQLContainer />
+      <Route path="/use-intersecting">
+        <IntersectingListContainer />
+      </Route>
+      <Route path="/use-infinite-scroll">
+        <InfiniteListContainer />
       </Route>
     </Switch>
   )
