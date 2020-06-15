@@ -33,7 +33,9 @@ type Props = {
 const IntersectingList = ({ data, loadMore, hasMore }: Props) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
   const targetRef = React.useRef<HTMLDivElement>(null)
-  const visible = useIntersecting(targetRef, 0.25)
+  const visible = useIntersecting({
+    ref: targetRef,
+  })
   const classes = useStyles()
 
   React.useEffect(() => {

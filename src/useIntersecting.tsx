@@ -1,10 +1,16 @@
 import React from "react"
 
-const useIntersecting = (
-  ref: React.MutableRefObject<any>,
-  threshold = 0,
+type ConfigParams = {
+  ref: React.MutableRefObject<any>
+  rootMargin?: string
+  threshold?: number
+}
+
+const useIntersecting = ({
+  ref,
   rootMargin = "0px",
-) => {
+  threshold = 0.25,
+}: ConfigParams) => {
   const [intersecting, setIntersecting] = React.useState(false)
 
   React.useEffect(() => {
