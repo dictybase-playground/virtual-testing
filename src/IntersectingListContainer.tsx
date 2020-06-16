@@ -6,7 +6,7 @@ import { GET_STRAIN_LIST } from "./query"
 const IntersectingListContainer = () => {
   const [hasMore, setHasMore] = React.useState(true)
   const [isLoadingMore, setIsLoadingMore] = React.useState(false)
-  const [prevCursor, setPrevCursor] = React.useState(false)
+  const [prevCursor, setPrevCursor] = React.useState(null)
   const { loading, error, data, fetchMore } = useQuery(GET_STRAIN_LIST, {
     variables: {
       cursor: 0,
