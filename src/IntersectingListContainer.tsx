@@ -61,7 +61,6 @@ const IntersectingListContainer = () => {
       loadMore={loadMoreItems}
       hasMore={hasMore}
       isLoadingMore={isLoadingMore}
-      setIsLoadingMore={setIsLoadingMore}
     />
   )
 }
