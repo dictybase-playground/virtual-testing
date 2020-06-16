@@ -17,14 +17,8 @@ describe("useIntersecting", () => {
 
   beforeAll(() => {
     window.IntersectionObserver = jest.fn((callback, options) => ({
-      thresholds: Array.isArray(options.threshold)
-        ? options.threshold
-        : [options.threshold],
-      root: options.root,
-      rootMargin: options.rootMargin,
       observe: mockObserve,
       unobserve: mockUnobserve,
-      disconnect: jest.fn(),
     }))
   })
 
@@ -37,12 +31,39 @@ describe("useIntersecting", () => {
     expect(mockObserve).toHaveBeenCalledTimes(1)
     expect(mockUnobserve).toHaveBeenCalledTimes(0)
   })
+
   it("should call unobserve method only on unmount", () => {
     const { unmount } = renderHook(() =>
-      useIntersecting({ ref, hasMore: false }),
+      useIntersecting({ ref, hasMore: true }),
     )
     expect(mockUnobserve).toHaveBeenCalledTimes(0)
     unmount()
     expect(mockUnobserve).toHaveBeenCalledTimes(1)
+  })
+
+  it("should return true if intersecting and more to fetch", () => {
+    window.IntersectionObserver = jest.fn((callback) => {
+      callback([{ isIntersecting: true }])
+      return {
+        observe: mockObserve,
+        unobserve: mockUnobserve,
+      }
+    })
+    const { result } = renderHook(() => useIntersecting({ ref, hasMore: true }))
+    expect(result.current).toBeTruthy()
+  })
+
+  it("should return false if not intersecting and nothing left to fetch", () => {
+    window.IntersectionObserver = jest.fn((callback) => {
+      callback([{ isIntersecting: false }])
+      return {
+        observe: mockObserve,
+        unobserve: mockUnobserve,
+      }
+    })
+    const { result } = renderHook(() =>
+      useIntersecting({ ref, hasMore: false }),
+    )
+    expect(result.current).toBeFalsy()
   })
 })
