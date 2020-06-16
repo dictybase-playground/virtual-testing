@@ -27,10 +27,7 @@ const useIntersecting = ({
       threshold: threshold,
     })
     const target = ref.current
-
-    if (ref) {
-      observer.observe(target)
-    }
+    observer.observe(target)
 
     // Clean up callback
     return () => observer.unobserve(target)
