@@ -32,7 +32,6 @@ type Props = {
   loadMore: () => void
   hasMore: boolean
   isLoadingMore: boolean
-  setIsLoadingMore: (arg0: boolean) => void
 }
 
 const IntersectingList = ({
@@ -40,7 +39,6 @@ const IntersectingList = ({
   loadMore,
   hasMore,
   isLoadingMore,
-  setIsLoadingMore,
 }: Props) => {
   const targetRef = React.useRef<HTMLDivElement>(null)
   const visible = useIntersecting({
@@ -51,10 +49,9 @@ const IntersectingList = ({
 
   React.useEffect(() => {
     if (visible && hasMore) {
-      setIsLoadingMore(true)
       loadMore()
     }
-  }, [hasMore, loadMore, setIsLoadingMore, visible])
+  }, [hasMore, loadMore, visible])
 
   return (
     <Paper className={classes.container} id="parent-ref">
