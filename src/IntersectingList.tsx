@@ -45,11 +45,16 @@ const IntersectingList = ({
   const targetRef = React.useRef<HTMLDivElement>(null)
   const visible = useIntersecting({
     ref: targetRef,
-    loadMore,
     hasMore,
-    setIsLoadingMore,
   })
   const classes = useStyles()
+
+  React.useEffect(() => {
+    if (visible && hasMore) {
+      setIsLoadingMore(true)
+      loadMore()
+    }
+  }, [hasMore, loadMore, setIsLoadingMore, visible])
 
   return (
     <Paper className={classes.container} id="parent-ref">
@@ -61,6 +66,7 @@ const IntersectingList = ({
             {item.label}
           </ListItem>
         ))}
+        {/* need to use new loading boolean to prevent double fetching on scroll */}
         {isLoadingMore && (
           <ListItem className={classes.loading}>
             Fetching more list items...
