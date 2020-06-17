@@ -51,6 +51,9 @@ const App = () => {
             <Link to="/use-infinite-scroll" className={classes.link}>
               Use Infinite Scroll
             </Link>
+            <Link to="/use-intersecting-phenotype" className={classes.link}>
+              Use Intersecting (Phenotype)
+            </Link>
             <Routes />
           </Grid>
         </Grid>
