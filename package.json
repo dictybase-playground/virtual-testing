@@ -35,7 +35,13 @@
     "lint": "eslint . --ext .ts,.tsx",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "cypress:ci": "start-server-and-test start http://localhost:3000 cypress:run"
+    "coverage:init": "react-scripts test --watchAll=false --coverage --coverageDirectory=.nyc_output --roots=\"<rootDir>\" --testMatch=\"<rootDir>/fake.test.js\" --coverageReporters=json && mv .nyc_output/coverage-final.json .nyc_output/out.json",
+    "coverage:integration": "start-server-and-test start http://localhost:3000 cypress:run",
+    "coverage:unit": "react-scripts test --watchAll=false --coverage --coverageDirectory=coverage/unit",
+    "coverage": "yarn coverage:clean && yarn coverage:integration && yarn coverage:unit && yarn coverage:merge && yarn coverage:merge-report",
+    "coverage:clean": "rm -rf .nyc_output && rm -rf coverage",
+    "coverage:merge": "istanbul-merge --out coverage/merged/coverage-final.json ./coverage/unit/coverage-final.json  ./coverage/integration/coverage-final.json",
+    "coverage:merge-report": "nyc report --reporter=lcov --reporter=text --temp-dir=./coverage/merged --report-dir=./coverage/merged"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -65,6 +71,7 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "istanbul-lib-coverage": "^3.0.0",
+    "istanbul-merge": "^1.1.1",
     "nyc": "^15.1.0",
     "prettier": "^2.0.5",
     "start-server-and-test": "^1.11.0"
@@ -73,5 +80,8 @@
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx}"
     ]
+  },
+  "nyc": {
+    "report-dir": "coverage/integration"
   }
 }
