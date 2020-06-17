@@ -1,5 +1,11 @@
 name: Testing
-on: pull_request
+on:
+  pull_request:
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -23,10 +29,6 @@ jobs:
       - name: yarn install
         run: yarn install
       - name: yarn test
-        run: yarn coverage:unit
+        run: yarn test
         env:
           CI: true
-      - name: upload coverage to codecov
-        uses: codecov/codecov-action@v1.0.2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
