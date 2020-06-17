@@ -36,11 +36,11 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "coverage:init": "react-scripts test --watchAll=false --coverage --coverageDirectory=.nyc_output --roots=\"<rootDir>\" --testMatch=\"<rootDir>/fake.test.js\" --coverageReporters=json && mv .nyc_output/coverage-final.json .nyc_output/out.json",
-    "coverage:integration": "start-server-and-test start http://localhost:3000 cypress:run",
+    "coverage:e2e": "start-server-and-test start http://localhost:3000 cypress:run",
     "coverage:unit": "react-scripts test --watchAll=false --coverage --coverageDirectory=coverage/unit",
-    "coverage": "yarn coverage:clean && yarn coverage:integration && yarn coverage:unit && yarn coverage:merge && yarn coverage:merge-report",
+    "coverage": "yarn coverage:clean && yarn coverage:e2e && yarn coverage:unit && yarn coverage:merge && yarn coverage:merge-report",
     "coverage:clean": "rm -rf .nyc_output && rm -rf coverage",
-    "coverage:merge": "istanbul-merge --out coverage/merged/coverage-final.json ./coverage/unit/coverage-final.json  ./coverage/integration/coverage-final.json",
+    "coverage:merge": "istanbul-merge --out coverage/merged/coverage-final.json ./coverage/unit/coverage-final.json  ./coverage/e2e/coverage-final.json",
     "coverage:merge-report": "nyc report --reporter=lcov --reporter=text --temp-dir=./coverage/merged --report-dir=./coverage/merged"
   },
   "eslintConfig": {
@@ -82,6 +82,6 @@
     ]
   },
   "nyc": {
-    "report-dir": "coverage/integration"
+    "report-dir": "coverage/e2e"
   }
 }

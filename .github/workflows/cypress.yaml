@@ -36,7 +36,7 @@ jobs:
       - name: install dependencies
         run: yarn install
       - name: run cypress tests
-        run: yarn coverage:integration
+        run: yarn coverage:e2e
       - name: upload coverage to codecov
         uses: codecov/codecov-action@v1.0.2
         with:
