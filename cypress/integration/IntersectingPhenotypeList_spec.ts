@@ -3,8 +3,7 @@
 describe("IntersectingPhenotypeList", () => {
   it("shows more rows on scroll", () => {
     cy.visit("/")
-    cy.contains("Use Intersecting (Phenotype)")
-    cy.get('a[href*="use-intersecting-phenotype"]').click()
+    cy.contains("Use Intersecting (Phenotype)").click()
     cy.contains("DBS0350576")
     cy.get("#parent-ref").scrollTo(0, 500)
     cy.contains("DBS0349879")
