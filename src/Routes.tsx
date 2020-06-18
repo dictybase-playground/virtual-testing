@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom"
 import IntersectingListContainer from "./IntersectingListContainer"
 import InfiniteListContainer from "./InfiniteListContainer"
 import IntersectingPhenotypeListContainer from "./IntersectingPhenotypeListContainer"
+import VirtualListContainer from "./VirtualListContainer"
 
 const Routes = () => {
   return (
@@ -15,6 +16,9 @@ const Routes = () => {
       </Route>
       <Route path="/use-infinite-scroll">
         <InfiniteListContainer />
+      </Route>
+      <Route path="/use-virtualization">
+        <VirtualListContainer />
       </Route>
     </Switch>
   )
