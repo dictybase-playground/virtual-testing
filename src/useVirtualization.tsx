@@ -15,7 +15,6 @@ const useVirtualization = ({
 }: ConfigParams) => {
   const [scrollTop, setScrollTop] = React.useState(0)
 
-  const innerHeight = numItems * rowHeight
   const startIndex = Math.floor(scrollTop / rowHeight)
   const endIndex = Math.min(
     numItems - 1, // don't render past the end of the list
@@ -25,13 +24,19 @@ const useVirtualization = ({
   for (let i = startIndex; i <= endIndex; i++) {
     items.push({
       index: i,
-      start: `${i * rowHeight}px`,
+      style: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: `${rowHeight}px`,
+        transform: `translateY(${i * rowHeight}px)`,
+      },
     })
   }
-  console.log(items.length)
   const handleScroll = (event: React.UIEvent<HTMLElement>) =>
     setScrollTop(event.currentTarget.scrollTop)
-  return { items, handleScroll, innerHeight }
+  return { items, handleScroll }
 }
 
 export default useVirtualization
