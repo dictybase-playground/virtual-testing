@@ -54,6 +54,9 @@ const App = () => {
             <Link to="/use-intersecting-phenotype" className={classes.link}>
               Use Intersecting (Phenotype)
             </Link>
+            <Link to="use-virtualization" className={classes.link}>
+              Use Virtualization
+            </Link>
             <Routes />
           </Grid>
         </Grid>
