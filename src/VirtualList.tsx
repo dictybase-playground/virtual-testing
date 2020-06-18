@@ -41,36 +41,20 @@ const VirtualList = ({ data, loadMore, hasMore, isLoadingMore }: Props) => {
     windowHeight: 310,
   })
   const classes = useStyles()
-
-  React.useEffect(() => {
-    const [lastItem] = [...rowData.items].reverse()
-    if (!lastItem) {
-      return
-    }
-    if (lastItem.index === data.length - 1 && hasMore && !isLoadingMore) {
-      loadMore()
-    }
-  }, [data.length, hasMore, isLoadingMore, loadMore, rowData.items])
+  const innerHeight = data.length * 25
 
   return (
     <Paper className={classes.container} onScroll={rowData.handleScroll}>
-      <List
-        style={{ position: "relative", height: `${rowData.innerHeight}px` }}>
+      <List style={{ position: "relative", height: `${innerHeight}px` }}>
         {rowData.items.map((item: any, index: number) => {
           const row = data[index]
+          console.log(row)
           return (
             <ListItem
               key={index}
               id={`row-${index}`}
               className={classes.row}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: `25px`,
-                transform: `translateY(${item.start})`,
-              }}>
+              style={item.style}>
               <strong>ID:</strong>&nbsp;{row.id} &nbsp;
               <strong>Descriptor:</strong>&nbsp;
               {row.label}
