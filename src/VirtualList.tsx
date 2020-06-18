@@ -33,12 +33,12 @@ type Props = {
 
 const VirtualList = ({ data }: Props) => {
   const rowData = useVirtualization({
-    rowHeight: 25,
+    rowHeight: 35,
     numItems: data.length, // hasMore ? data.length + 1 : data.length
     windowHeight: 310,
   })
   const classes = useStyles()
-  const innerHeight = data.length * 25
+  const innerHeight = data.length * 35
 
   return (
     <Paper className={classes.container} onScroll={rowData.handleScroll}>
