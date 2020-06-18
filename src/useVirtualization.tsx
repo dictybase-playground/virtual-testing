@@ -35,6 +35,9 @@ const useVirtualization = ({
     })
   }
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
+    // scrollTop measures how far the inner container is scrolled;
+    // it is the distance between the top of the inner container and its
+    // visible part
     setScrollTop(event.currentTarget.scrollTop)
   }
 
