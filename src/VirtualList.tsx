@@ -29,12 +29,9 @@ type Props = {
     id: string
     label: string
   }>
-  loadMore: () => void
-  hasMore: boolean
-  isLoadingMore: boolean
 }
 
-const VirtualList = ({ data, loadMore, hasMore, isLoadingMore }: Props) => {
+const VirtualList = ({ data }: Props) => {
   const rowData = useVirtualization({
     rowHeight: 25,
     numItems: data.length, // hasMore ? data.length + 1 : data.length
@@ -47,25 +44,19 @@ const VirtualList = ({ data, loadMore, hasMore, isLoadingMore }: Props) => {
     <Paper className={classes.container} onScroll={rowData.handleScroll}>
       <List style={{ position: "relative", height: `${innerHeight}px` }}>
         {rowData.items.map((item: any, index: number) => {
-          const row = data[index]
-          console.log(row)
+          const strain = data[item.index]
           return (
             <ListItem
-              key={index}
-              id={`row-${index}`}
+              key={item.index}
+              id={`row-${item.index}`}
               className={classes.row}
               style={item.style}>
-              <strong>ID:</strong>&nbsp;{row.id} &nbsp;
+              <strong>ID:</strong>&nbsp;{strain.id} &nbsp;
               <strong>Descriptor:</strong>&nbsp;
-              {row.label}
+              {strain.label}
             </ListItem>
           )
         })}
-        {isLoadingMore && (
-          <ListItem className={classes.loading}>
-            Fetching more list items...
-          </ListItem>
-        )}
       </List>
     </Paper>
   )

@@ -34,8 +34,10 @@ const useVirtualization = ({
       },
     })
   }
-  const handleScroll = (event: React.UIEvent<HTMLElement>) =>
+  const handleScroll = (event: React.UIEvent<HTMLElement>) => {
     setScrollTop(event.currentTarget.scrollTop)
+  }
+
   return { items, handleScroll }
 }
 
