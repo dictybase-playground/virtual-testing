@@ -1,10 +1,15 @@
 import React from "react"
 
 type ConfigParams = {
+  /** React ref used to access DOM node */
   ref: React.MutableRefObject<any>
+  /** Height of the scrollable area */
   viewportHeight: number
+  /** Height of individual row */
   rowHeight: number
+  /** Number of items in total */
   numItems: number
+  /** Number of elements to render above and below viewport */
   overscan?: number
 }
 
