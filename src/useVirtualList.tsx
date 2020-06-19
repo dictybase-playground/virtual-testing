@@ -2,7 +2,7 @@ import React from "react"
 
 type ConfigParams = {
   ref: React.MutableRefObject<any>
-  windowHeight: number
+  viewportHeight: number
   rowHeight: number
   numItems: number
   overscan?: number
@@ -10,8 +10,8 @@ type ConfigParams = {
 
 const useVirtualList = ({
   ref,
-  windowHeight = 310,
-  rowHeight = 35,
+  viewportHeight,
+  rowHeight,
   numItems,
   overscan,
 }: ConfigParams) => {
@@ -20,7 +20,7 @@ const useVirtualList = ({
   const startIndex = Math.floor(scrollTop / rowHeight)
   const endIndex = Math.min(
     numItems - 1, // don't render past the end of the list
-    Math.floor((scrollTop + windowHeight) / rowHeight),
+    Math.floor((scrollTop + viewportHeight) / rowHeight),
   )
   const items = []
   for (let i = startIndex; i <= endIndex; i++) {

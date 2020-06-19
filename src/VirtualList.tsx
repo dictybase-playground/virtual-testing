@@ -37,7 +37,7 @@ const VirtualList = ({ data }: Props) => {
     ref: parentRef,
     rowHeight: 35,
     numItems: data.length,
-    windowHeight: 310,
+    viewportHeight: 310,
   })
   const classes = useStyles()
   const innerHeight = data.length * 35
