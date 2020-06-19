@@ -46,7 +46,7 @@ const VirtualList = ({ data }: Props) => {
   return (
     <Paper ref={parentRef} className={classes.container}>
       <List style={{ position: "relative", height: `${innerHeight}px` }}>
-        {rowData.items.map((item: any, index: number) => {
+        {rowData.items.map((item: any) => {
           const strain = data[item.index]
           return (
             <ListItem
