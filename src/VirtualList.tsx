@@ -40,6 +40,7 @@ const VirtualList = ({ data }: Props) => {
     viewportHeight: 310,
   })
   const classes = useStyles()
+  // total height of the list itself
   const innerHeight = data.length * 35
 
   return (

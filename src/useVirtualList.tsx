@@ -1,9 +1,11 @@
 import React from "react"
 
+// reference: https://medium.com/ingeniouslysimple/building-a-virtualized-list-from-scratch-9225e8bec120
+
 type ConfigParams = {
   /** React ref used to access DOM node */
   ref: React.MutableRefObject<any>
-  /** Height of the scrollable area */
+  /** Height of the scrollable area (inner container) */
   viewportHeight: number
   /** Height of individual row */
   rowHeight: number
@@ -20,6 +22,11 @@ const useVirtualList = ({
   numItems,
   overscan,
 }: ConfigParams) => {
+  /**
+   * scrollTop measures how far the inner container is scrolled.
+   * It is the difference between the total list height and the viewport
+   * height.
+   */
   const [scrollTop, setScrollTop] = React.useState(0)
 
   const startIndex = Math.floor(scrollTop / rowHeight)
@@ -27,9 +34,11 @@ const useVirtualList = ({
     numItems - 1, // don't render past the end of the list
     Math.floor((scrollTop + viewportHeight) / rowHeight),
   )
+
   const items = []
   for (let i = startIndex; i <= endIndex; i++) {
     items.push({
+      // index is required so we know the exact row of data to display
       index: i,
       style: {
         position: "absolute",
@@ -42,9 +51,6 @@ const useVirtualList = ({
     })
   }
 
-  // scrollTop measures how far the inner container is scrolled;
-  // it is the distance between the top of the inner container and its
-  // visible part
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
     setScrollTop(event.currentTarget.scrollTop)
   }
