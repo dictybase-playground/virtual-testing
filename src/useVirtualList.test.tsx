@@ -1,4 +1,3 @@
-import React from "react"
 import { renderHook } from "@testing-library/react-hooks"
 import useVirtualList from "./useVirtualList"
 
@@ -6,7 +5,7 @@ describe("useVirtualList", () => {
   let ref = null as any
 
   beforeAll(() => {
-    ref = jest.spyOn(React, "useRef").mockReturnValueOnce({ current: null })
+    ref = { current: null }
   })
 
   describe("items returned", () => {

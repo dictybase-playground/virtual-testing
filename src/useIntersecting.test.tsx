@@ -1,4 +1,3 @@
-import React from "react"
 import { renderHook } from "@testing-library/react-hooks"
 import useIntersecting from "./useIntersecting"
 
@@ -9,7 +8,7 @@ describe("useIntersecting", () => {
   let mockUnobserve: jest.Mock
 
   beforeAll(() => {
-    ref = jest.spyOn(React, "useRef").mockReturnValueOnce({ current: null })
+    ref = { current: null }
   })
 
   describe("observe and unobserve methods", () => {
