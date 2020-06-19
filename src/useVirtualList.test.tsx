@@ -3,12 +3,19 @@ import { renderHook } from "@testing-library/react-hooks"
 import useVirtualList from "./useVirtualList"
 
 describe("useVirtualList", () => {
+  let ref = null as any
+
+  beforeAll(() => {
+    ref = jest.spyOn(React, "useRef").mockReturnValueOnce({ current: null })
+  })
+
   describe("items returned", () => {
     const { result } = renderHook(() =>
       useVirtualList({
+        ref,
         rowHeight: 30,
         numItems: 100,
-        windowHeight: 300,
+        viewportHeight: 300,
       }),
     )
     const items = result.current.items
