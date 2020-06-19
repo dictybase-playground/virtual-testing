@@ -1,11 +1,11 @@
 import React from "react"
 import { renderHook } from "@testing-library/react-hooks"
-import useVirtualization from "./useVirtualization"
+import useVirtualList from "./useVirtualList"
 
-describe("useVirtualization", () => {
+describe("useVirtualList", () => {
   describe("items returned", () => {
     const { result } = renderHook(() =>
-      useVirtualization({
+      useVirtualList({
         rowHeight: 30,
         numItems: 100,
         windowHeight: 300,

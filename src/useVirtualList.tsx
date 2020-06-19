@@ -7,7 +7,7 @@ type ConfigParams = {
   overscan?: number
 }
 
-const useVirtualization = ({
+const useVirtualList = ({
   windowHeight = 310,
   rowHeight = 35,
   numItems,
@@ -44,4 +44,4 @@ const useVirtualization = ({
   return { items, handleScroll }
 }
 
-export default useVirtualization
+export default useVirtualList

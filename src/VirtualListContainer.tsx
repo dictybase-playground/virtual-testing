@@ -10,7 +10,7 @@ const VirtualListContainer = () => {
   const { loading, error, data } = useQuery(GET_STRAIN_LIST, {
     variables: {
       cursor: 0,
-      limit: 30000,
+      limit: 2000,
       filter: "",
     },
   })
