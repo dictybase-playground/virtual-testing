@@ -32,7 +32,9 @@ type Props = {
 }
 
 const VirtualList = ({ data }: Props) => {
+  const parentRef = React.useRef<HTMLDivElement>(null)
   const rowData = useVirtualList({
+    ref: parentRef,
     rowHeight: 35,
     numItems: data.length,
     windowHeight: 310,
@@ -41,7 +43,7 @@ const VirtualList = ({ data }: Props) => {
   const innerHeight = data.length * 35
 
   return (
-    <Paper className={classes.container} onScroll={rowData.handleScroll}>
+    <Paper ref={parentRef} className={classes.container}>
       <List style={{ position: "relative", height: `${innerHeight}px` }}>
         {rowData.items.map((item: any, index: number) => {
           const strain = data[item.index]

@@ -1,6 +1,7 @@
 import React from "react"
 
 type ConfigParams = {
+  ref: React.MutableRefObject<any>
   windowHeight: number
   rowHeight: number
   numItems: number
@@ -8,6 +9,7 @@ type ConfigParams = {
 }
 
 const useVirtualList = ({
+  ref,
   windowHeight = 310,
   rowHeight = 35,
   numItems,
@@ -34,14 +36,20 @@ const useVirtualList = ({
       },
     })
   }
+
+  // scrollTop measures how far the inner container is scrolled;
+  // it is the distance between the top of the inner container and its
+  // visible part
   const handleScroll = (event: React.UIEvent<HTMLElement>) => {
-    // scrollTop measures how far the inner container is scrolled;
-    // it is the distance between the top of the inner container and its
-    // visible part
     setScrollTop(event.currentTarget.scrollTop)
   }
 
-  return { items, handleScroll }
+  React.useEffect(() => {
+    const element = ref.current
+    element.onscroll = handleScroll
+  }, [ref])
+
+  return { items }
 }
 
 export default useVirtualList
