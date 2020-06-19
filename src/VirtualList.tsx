@@ -3,7 +3,7 @@ import Paper from "@material-ui/core/Paper"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import { makeStyles } from "@material-ui/core/styles"
-import useVirtualization from "./useVirtualization"
+import useVirtualList from "./useVirtualList"
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -32,9 +32,9 @@ type Props = {
 }
 
 const VirtualList = ({ data }: Props) => {
-  const rowData = useVirtualization({
+  const rowData = useVirtualList({
     rowHeight: 35,
-    numItems: data.length, // hasMore ? data.length + 1 : data.length
+    numItems: data.length,
     windowHeight: 310,
   })
   const classes = useStyles()
