@@ -38,6 +38,7 @@ const VirtualList = ({ data }: Props) => {
     rowHeight: 35,
     numItems: data.length,
     viewportHeight: 310,
+    overscan: 2,
   })
   const classes = useStyles()
   // total height of the list itself
