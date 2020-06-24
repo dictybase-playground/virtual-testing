@@ -36,7 +36,9 @@ const useVirtualList = ({
   )
 
   if (overscan) {
+    // take zero or the index minus overscan, whichever is higher
     startIndex = Math.max(0, startIndex - overscan)
+    // if end of list, don't display the extra elements
     endIndex = Math.min(numItems - 1, endIndex + overscan)
   }
 
@@ -63,8 +65,11 @@ const useVirtualList = ({
   React.useEffect(() => {
     if (ref && ref.current) {
       const element = ref.current
-      element.onscroll = handleScroll
+      element.addEventListener("scroll", handleScroll)
+
+      return () => element.removeEventListener("scroll", handleScroll)
     }
+    return
   }, [ref])
 
   return { items }
