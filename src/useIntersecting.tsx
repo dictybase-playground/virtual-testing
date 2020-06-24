@@ -12,6 +12,8 @@ type ConfigParams = {
   threshold?: number
   /** Indicates whether there are more items to fetch */
   hasMore: boolean
+  /** React ref for element that is used as viewport for checking visibility of target */
+  root?: React.MutableRefObject<any>
 }
 
 const useIntersecting = ({
@@ -19,6 +21,7 @@ const useIntersecting = ({
   rootMargin = "0px",
   threshold = 0.25,
   hasMore,
+  root,
 }: ConfigParams) => {
   const [intersecting, setIntersecting] = React.useState(false)
 
@@ -28,8 +31,12 @@ const useIntersecting = ({
         setIntersecting(entries[0].isIntersecting)
       }
     }
-
+    let element = null
+    if (root && root.current) {
+      element = root.current
+    }
     const observer = new IntersectionObserver(callback, {
+      root: element,
       rootMargin: rootMargin,
       threshold: threshold,
     })
@@ -37,7 +44,7 @@ const useIntersecting = ({
     observer.observe(target)
 
     return () => observer.unobserve(target)
-  }, [hasMore, intersecting, ref, rootMargin, threshold])
+  }, [hasMore, intersecting, ref, root, rootMargin, threshold])
 
   return intersecting
 }
