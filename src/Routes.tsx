@@ -4,6 +4,7 @@ import IntersectingListContainer from "./IntersectingListContainer"
 import InfiniteListContainer from "./InfiniteListContainer"
 import IntersectingPhenotypeListContainer from "./IntersectingPhenotypeListContainer"
 import VirtualListContainer from "./VirtualListContainer"
+import InfiniteVirtualListContainer from "./InfiniteVirtualListContainer"
 
 const Routes = () => {
   return (
@@ -19,6 +20,9 @@ const Routes = () => {
       </Route>
       <Route path="/use-virtualization">
         <VirtualListContainer />
+      </Route>
+      <Route path="/use-both">
+        <InfiniteVirtualListContainer />
       </Route>
     </Switch>
   )

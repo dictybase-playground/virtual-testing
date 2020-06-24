@@ -57,6 +57,9 @@ const App = () => {
             <Link to="use-virtualization" className={classes.link}>
               Use Virtualization
             </Link>
+            <Link to="use-both" className={classes.link}>
+              Use Intersecting & Virtualization
+            </Link>
             <Routes />
           </Grid>
         </Grid>
