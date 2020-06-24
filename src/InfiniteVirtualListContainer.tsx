@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/react-hooks"
 import InfiniteVirtualList from "./InfiniteVirtualList"
 import { GET_STRAIN_LIST } from "./query"
 
-const VirtualListContainer = () => {
+const InfiniteVirtualListContainer = () => {
   const [hasMore, setHasMore] = React.useState(true)
   const [isLoadingMore, setIsLoadingMore] = React.useState(false)
   const [prevCursor, setPrevCursor] = React.useState(null)
@@ -65,4 +65,4 @@ const VirtualListContainer = () => {
   )
 }
 
-export default VirtualListContainer
+export default InfiniteVirtualListContainer
