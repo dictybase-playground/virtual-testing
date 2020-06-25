@@ -42,7 +42,7 @@ const IntersectingList = ({
 }: Props) => {
   const targetRef = React.useRef<HTMLDivElement>(null)
   const visible = useIntersecting({
-    ref: targetRef,
+    targetRef,
     hasMore,
   })
   const classes = useStyles()
