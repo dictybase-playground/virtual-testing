@@ -42,17 +42,18 @@ const InfiniteVirtualList = ({
   isLoadingMore,
 }: Props) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
-  const targetRef = React.useRef<HTMLDivElement>(null)
+  const targetRef = React.useRef<any>(null)
   const rowData = useVirtualList({
     ref: parentRef,
     rowHeight: 35,
     numItems: data.length,
     viewportHeight: 310,
-    overscan: 2,
+    // overscan: 2,
   })
   const visible = useIntersecting({
     ref: targetRef,
     hasMore,
+    root: parentRef,
   })
   const classes = useStyles()
   // total height of the list itself
@@ -69,8 +70,13 @@ const InfiniteVirtualList = ({
       <List style={{ position: "relative", height: `${innerHeight}px` }}>
         {rowData.items.map((item: any) => {
           const strain = data[item.index]
+          let target = null
+          if (rowData.items.length - 1 === item.index) {
+            target = targetRef
+          }
           return (
             <ListItem
+              ref={target}
               key={item.index}
               id={`row-${item.index}`}
               className={classes.row}
@@ -81,13 +87,11 @@ const InfiniteVirtualList = ({
             </ListItem>
           )
         })}
-        {/* need to use new loading boolean to prevent double fetching on scroll */}
         {isLoadingMore && (
           <ListItem className={classes.loading}>
             Fetching more list items...
           </ListItem>
         )}
-        <div ref={targetRef} />
       </List>
     </Paper>
   )
