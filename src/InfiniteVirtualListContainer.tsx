@@ -10,7 +10,7 @@ const InfiniteVirtualListContainer = () => {
   const { loading, error, data, fetchMore } = useQuery(GET_STRAIN_LIST, {
     variables: {
       cursor: 0,
-      limit: 2000,
+      limit: 20,
       filter: "",
     },
   })
@@ -29,7 +29,7 @@ const InfiniteVirtualListContainer = () => {
       query: GET_STRAIN_LIST,
       variables: {
         cursor: newCursor,
-        limit: 2000,
+        limit: 20,
         filter: "",
       },
       updateQuery: (previousResult: any, { fetchMoreResult }: any) => {
