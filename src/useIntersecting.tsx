@@ -4,7 +4,9 @@ import React from "react"
 
 type ConfigParams = {
   /** React ref used to access DOM node */
-  ref: React.MutableRefObject<any>
+  targetRef: React.MutableRefObject<any>
+  /** React ref for element that is used as viewport for checking visibility of target */
+  rootRef?: React.MutableRefObject<any>
   /** Margin around the root */
   rootMargin?: string
   /** Indicates the percentage of the target's visibility the observer's
@@ -12,16 +14,14 @@ type ConfigParams = {
   threshold?: number
   /** Indicates whether there are more items to fetch */
   hasMore: boolean
-  /** React ref for element that is used as viewport for checking visibility of target */
-  root?: React.MutableRefObject<any>
 }
 
 const useIntersecting = ({
-  ref,
+  targetRef,
+  rootRef,
   rootMargin = "0px",
   threshold = 0.25,
   hasMore,
-  root,
 }: ConfigParams) => {
   const [intersecting, setIntersecting] = React.useState(false)
 
@@ -31,20 +31,23 @@ const useIntersecting = ({
         setIntersecting(entries[0].isIntersecting)
       }
     }
-    let element = null
-    if (root && root.current) {
-      element = root.current
+    let element,
+      target: any = null
+    if (rootRef && rootRef.current) {
+      element = rootRef.current
     }
     const observer = new IntersectionObserver(callback, {
       root: element,
       rootMargin: rootMargin,
       threshold: threshold,
     })
-    const target = ref.current
-    observer.observe(target)
+    if (targetRef && targetRef.current) {
+      target = targetRef.current
+      observer.observe(target)
+    }
 
     return () => observer.unobserve(target)
-  }, [hasMore, intersecting, ref, root, rootMargin, threshold])
+  }, [hasMore, intersecting, rootMargin, rootRef, targetRef, threshold])
 
   return intersecting
 }
