@@ -41,19 +41,19 @@ const InfiniteVirtualList = ({
   hasMore,
   isLoadingMore,
 }: Props) => {
-  const parentRef = React.useRef<HTMLDivElement>(null)
+  const rootRef = React.useRef<HTMLDivElement>(null)
   const targetRef = React.useRef<any>(null)
   const rowData = useVirtualList({
-    ref: parentRef,
+    ref: rootRef,
     rowHeight: 35,
     numItems: data.length,
     viewportHeight: 310,
     // overscan: 2,
   })
   const visible = useIntersecting({
-    ref: targetRef,
+    targetRef,
     hasMore,
-    root: parentRef,
+    rootRef,
   })
   const classes = useStyles()
   // total height of the list itself
@@ -66,12 +66,12 @@ const InfiniteVirtualList = ({
   }, [hasMore, loadMore, visible])
 
   return (
-    <Paper ref={parentRef} className={classes.container}>
+    <Paper ref={rootRef} className={classes.container}>
       <List style={{ position: "relative", height: `${innerHeight}px` }}>
         {rowData.items.map((item: any) => {
           const strain = data[item.index]
           let target = null
-          if (rowData.items.length - 1 === item.index) {
+          if (data.length - 1 === item.index) {
             target = targetRef
           }
           return (
