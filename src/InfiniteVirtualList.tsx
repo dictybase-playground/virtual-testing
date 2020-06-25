@@ -70,13 +70,21 @@ const InfiniteVirtualList = ({
       <List style={{ position: "relative", height: `${innerHeight}px` }}>
         {rowData.items.map((item: any) => {
           const strain = data[item.index]
-          let target = null
           if (data.length - 1 === item.index) {
-            target = targetRef
+            console.log(visible)
+            return (
+              <ListItem
+                ref={targetRef}
+                key={item.index}
+                id={`row-${item.index}`}
+                className={classes.row}
+                style={item.style}>
+                abcd
+              </ListItem>
+            )
           }
           return (
             <ListItem
-              ref={target}
               key={item.index}
               id={`row-${item.index}`}
               className={classes.row}
