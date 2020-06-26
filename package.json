@@ -33,6 +33,8 @@
     "test-coverage": "react-scripts test --coverage --watchAll",
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .ts,.tsx",
+    "deck": "mdx-deck deck/deck.mdx",
+    "deck-build": "mdx-deck build deck/deck.mdx",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "coverage": "yarn coverage:clean && yarn coverage:e2e && yarn coverage:unit && yarn coverage:merge && yarn coverage:merge-report",
@@ -71,6 +73,7 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "istanbul-lib-coverage": "^3.0.0",
     "istanbul-merge": "^1.1.1",
+    "mdx-deck": "^4.1.1",
     "nyc": "^15.1.0",
     "prettier": "^2.0.5",
     "start-server-and-test": "^1.11.0"
