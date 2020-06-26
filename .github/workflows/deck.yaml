@@ -1,4 +1,4 @@
-name: Testing
+name: Build mdx-deck
 on:
   pull_request:
     branches:
@@ -7,7 +7,7 @@ on:
     branches:
       - develop
 jobs:
-  test:
+  deck:
     runs-on: ubuntu-latest
     steps:
       - name: set up node.js
