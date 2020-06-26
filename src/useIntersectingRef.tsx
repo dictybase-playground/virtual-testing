@@ -19,14 +19,14 @@ const useIntersectingRef = ({
   threshold = 0.25,
   hasMore,
 }: ConfigParams) => {
-  const [ref, setRef] = React.useState(null)
+  const [targetRef, setTargetRef] = React.useState(null)
   const [intersecting, setIntersecting] = React.useState(false)
   const observerRef = React.useRef<any>(null)
 
-  const callback = React.useCallback(
-    (entries: IntersectionObserverEntry[]) => {
+  const observerCallback = React.useCallback(
+    ([entry]: IntersectionObserverEntry[]) => {
       if (hasMore) {
-        setIntersecting(entries[0].isIntersecting)
+        setIntersecting(entry.isIntersecting)
       }
     },
     [hasMore],
@@ -39,14 +39,14 @@ const useIntersectingRef = ({
   }, [])
 
   const observe = React.useCallback(() => {
-    observerRef.current = new IntersectionObserver(callback, {
+    observerRef.current = new IntersectionObserver(observerCallback, {
       rootMargin,
       threshold,
     })
-    if (ref) {
-      observerRef.current.observe(ref)
+    if (targetRef && targetRef) {
+      observerRef.current.observe(targetRef)
     }
-  }, [callback, ref, rootMargin, threshold])
+  }, [observerCallback, rootMargin, targetRef, threshold])
 
   // maybe replace with useLayoutEffect?
   React.useEffect(() => {
@@ -56,7 +56,7 @@ const useIntersectingRef = ({
     }
   }, [observe, disconnect])
 
-  return [intersecting, setRef]
+  return [intersecting, setTargetRef]
 }
 
 export default useIntersectingRef
