@@ -4,7 +4,7 @@ import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import { makeStyles } from "@material-ui/core/styles"
 import useVirtualList from "./useVirtualList"
-import useIntersecting from "./useIntersecting"
+import useIntersectingRef from "./useIntersectingRef"
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -42,7 +42,6 @@ const InfiniteVirtualList = ({
   isLoadingMore,
 }: Props) => {
   const rootRef = React.useRef<HTMLDivElement>(null)
-  const targetRef = React.useRef<any>(null)
   const rowData = useVirtualList({
     ref: rootRef,
     rowHeight: 35,
@@ -50,10 +49,8 @@ const InfiniteVirtualList = ({
     viewportHeight: 310,
     // overscan: 2,
   })
-  const visible = useIntersecting({
-    targetRef,
+  const [visible, ref] = useIntersectingRef({
     hasMore,
-    rootRef,
   })
   const classes = useStyles()
   // total height of the list itself
@@ -71,10 +68,10 @@ const InfiniteVirtualList = ({
         {rowData.items.map((item: any) => {
           const strain = data[item.index]
           if (data.length - 1 === item.index) {
-            console.log(visible)
             return (
               <ListItem
-                ref={targetRef}
+                // @ts-ignore
+                ref={ref}
                 key={item.index}
                 id={`row-${item.index}`}
                 className={classes.row}
