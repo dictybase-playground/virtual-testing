@@ -1,9 +1,66 @@
-# Hello
+import { themes } from 'mdx-deck'
+import { ApolloProvider } from '@apollo/react-hooks'
+import {client} from '../src/App'
+import InfiniteListContainer from '../src/InfiniteListContainer.tsx'
+
+export const theme = themes.book
+
+# The Problem
+
+For our stock catalog pages, we were using the **`react-window`** library and two of 
+its companion libraries (**`react-window-infinite-loader`** and **`react-virtualized-auto-sizer`**). 
+While these libraries are popular, their use of nested React render props patterns 
+makes writing proper unit tests very difficult.
+
+Rather than rely on these libraries and use unreliable unit tests, we decided to make 
+our own library using the new React standard of hooks. This would be built from the ground 
+up, ensuring we have thoroughly tested our logic piece by piece.
 
 ---
 
-## This is my deck
+## Concepts
+
+The stock catalog pages use two different concepts for displaying data.
+
+1) Infinite scroll
+- fetches new data every time the user scrolls to a specified 
+part of the viewport
+- fine for some use cases, but can raise performance issues when 1000+ items are 
+rendered while scrolling
+
+2) List virtualization (or 'windowing')
+- only adds the shown part of the viewport to the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction) (fixes performance issue mentioned above)
+- requires specific styling for each element in the viewport
+
+These approaches were tackled one by one, starting with the infinite scroll.
+
 
 ---
 
-## The End
+## First Solution Attempt
+
+For infinite scrolling, the first idea was to add an on scroll event listener to a 
+parent ref that fires off a function every time the viewport scrolls. We are able to 
+detect when the user reaches the bottom of that viewport with the following logic:
+
+```js
+container.scrollHeight - container.scrollTop === container.clientHeight
+```
+
+We set up two `useEffect` methods inside of our custom hook. Inside the first one, we 
+use a `handleScroll` function that detects the bottom of the viewport with the above logic 
+and then sets `isFetching` to true if the user has scrolled to the bottom.
+
+The second `useEffect` is only called if `isFetching` is true, and it is here that we 
+fire off a callback function (in our case, to fetch more data). `isFetching` and 
+`setIsFetching` are returned from the hook for use in the component.
+
+This solution was inspired by this [blog post](https://upmostly.com/tutorials/build-an-infinite-scroll-component-in-react-using-react-hooks).
+
+---
+
+## useInfiniteScroll demo
+
+<ApolloProvider client={client}>
+<InfiniteListContainer/>
+</ApolloProvider>
