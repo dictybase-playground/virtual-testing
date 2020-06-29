@@ -68,4 +68,5 @@ const App = () => {
   )
 }
 
+export { client }
 export default App
