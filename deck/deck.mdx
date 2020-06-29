@@ -2,6 +2,7 @@ import { themes } from 'mdx-deck'
 import { ApolloProvider } from '@apollo/react-hooks'
 import {client} from '../src/App'
 import InfiniteListContainer from '../src/InfiniteListContainer.tsx'
+import IntersectingListContainer from '../src/IntersectingListContainer.tsx'
 
 export const theme = themes.book
 
@@ -62,5 +63,13 @@ This solution was inspired by this [blog post](https://upmostly.com/tutorials/bu
 ## useInfiniteScroll demo
 
 <ApolloProvider client={client}>
-<InfiniteListContainer/>
+    <InfiniteListContainer />
+</ApolloProvider>
+
+---
+
+## useIntersectingObserver demo
+
+<ApolloProvider client={client}>
+    <IntersectingListContainer />
 </ApolloProvider>
