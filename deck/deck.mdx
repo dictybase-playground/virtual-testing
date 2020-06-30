@@ -1,10 +1,13 @@
-import { Image, themes } from "mdx-deck"
+import { Image, Split, themes } from "mdx-deck"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { client } from "../src/App"
 import InfiniteListContainer from "../src/InfiniteListContainer.tsx"
 import IntersectingListContainer from "../src/IntersectingListContainer.tsx"
 import current from "./current-catalog.gif"
+import dom from "./dom-rendering.gif"
+import virtualization from "./virtualization.gif"
 import virtualCode from "./virtual-code.png"
+import useInfiniteScroll from "./useInfiniteScroll.png"
 
 export const theme = themes.book
 
@@ -89,3 +92,137 @@ Why don't we just write our own library?
 4. Second Attempt
 
 5. Conclusion?
+
+---
+
+## Infinite Scrolling
+
+- Alternative to pagination
+- Loads content continuously as user scrolls down
+
+<Image
+  src="https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/10c26bc0-6dd8-4397-923c-e840e98cf6a1/infinite-scroll-vs-pagination.png"
+  height={400}
+  width={800}
+/>
+
+[Image Source](https://www.smashingmagazine.com/2013/05/infinite-scrolling-lets-get-to-the-bottom-of-this/)
+
+---
+
+## Potential Flaws
+
+- Performance issue when displaying upwards of 10,000 items
+- Every row is rendered to the DOM
+
+<Image src={dom} height={400} />
+
+---
+
+## List Virtualization
+
+In order to prevent all list items from rendering to the DOM, we can use a concept
+called "list virtualization" (or "windowing").
+
+- All data is inserted into JavaScript state memory
+- Only the items shown in the viewport are inserted into the DOM, the rest remains
+  in JS state
+
+<Image src={virtualization} height={450} />
+
+---
+
+# Overview
+
+1. Background
+
+2. Core Concepts
+
+**3. First Attempt**
+
+4. Second Attempt
+
+5. Conclusion?
+
+---
+
+## useInfiniteScroll
+
+<Split style={{ textAlign: "left", height: "auto" }}>
+
+<div>
+  This hook requires two `useEffect` methods.
+  <ol>
+    <li>
+      Attaches scroll event listener to parent ref, then sets `isFetching`
+      boolean when the bottom of the container is reached.
+    </li>
+    <br />
+    <li>
+      Fires off a callback function to fetch more data when `isFetching` is
+      true.
+    </li>
+  </ol>
+</div>
+
+<center>
+  <Image src={useInfiniteScroll} height={450} width={500} />
+</center>
+
+</Split>
+
+This solution was inspired by this [blog post](https://upmostly.com/tutorials/build-an-infinite-scroll-component-in-react-using-react-hooks).
+
+---
+
+## useInfiniteScroll Demo
+
+<ApolloProvider client={client}>
+  <InfiniteListContainer />
+</ApolloProvider>
+
+---
+
+## Issues
+
+- Hundreds of scroll events are fired on a single scroll
+- Needs throttling or debouncing to minimize the damage
+
+Good news... this approach is now completely unnecessary with the new
+`IntersectionObserver` Web API!
+
+---
+
+# Overview
+
+1. Background
+
+2. Core Concepts
+
+3. First Attempt
+
+**4. Second Attempt**
+
+5. Conclusion?
+
+---
+
+## useIntersectingObserver Demo
+
+<ApolloProvider client={client}>
+  <IntersectingListContainer />
+</ApolloProvider>
+
+---
+
+# Overview
+
+1. Background
+
+2. Core Concepts
+
+3. First Attempt
+
+4. Second Attempt
+
+**5. Conclusion?**
