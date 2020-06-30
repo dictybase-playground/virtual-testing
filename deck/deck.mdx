@@ -9,6 +9,8 @@ import dom from "./dom-rendering.gif"
 import virtualization from "./virtualization.gif"
 import virtualCode from "./virtual-code.png"
 import useInfiniteScroll from "./useInfiniteScroll.png"
+import useIntersectionObserver from "./useIntersectionObserver.png"
+import useVirtualList from "./useVirtualList.png"
 
 export const theme = themes.book
 
@@ -242,6 +244,31 @@ The Intersection Observer API provides a way to asynchronously observe changes i
 
 ## useIntersectionObserver
 
+<Split style={{ textAlign: "left", height: "auto" }}>
+
+<div>
+  This hook requires one <em>useEffect</em> method.
+  <ul>
+    <li>
+      This creates a new <em>IntersectionObserver</em> that observes a target
+      ref.
+    </li>
+    <br />
+    <li>
+      When the target and root elements are intersecting, a boolean is set to
+      true. This is then used by the component as guidance to load more data.
+    </li>
+  </ul>
+</div>
+
+<center>
+  <Image src={useIntersectionObserver} height={600} width={500} />
+</center>
+
+</Split>
+
+This solution was inspired by this [blog post](https://www.samroelants.com/blog/using-the-intersectionobserver-api-with-react-hooks/).
+
 ---
 
 ## useIntersectionObserver Demo
@@ -268,7 +295,27 @@ The Intersection Observer API provides a way to asynchronously observe changes i
 
 ---
 
-## useVirtualList
+## Virtualization Attempt
+
+Using the `IntersectionObserver` would work well for some of our use cases, but
+it is not a good solution when displaying all 20,000+ strains in our catalog.
+
+For this, we need to use some type of list virtualization.
+
+---
+
+## useVirtualList Steps
+
+1. Calculate start index and end index for each row
+2. Add optional overscan to render additional hidden elements above and below container
+3. Attach scroll event listener to the parent ref which updates the `scrollTop` state
+   on scroll. This measures how far the inner container is scrolled.
+4. Return an array of items with each one containing the index of the data array to display,
+   as well as the absolute styling for that row.
+
+(code snippet too big for this slide)
+
+This solution was inspired by this [blog post](https://medium.com/ingeniouslysimple/building-a-virtualized-list-from-scratch-9225e8bec120).
 
 ---
 
