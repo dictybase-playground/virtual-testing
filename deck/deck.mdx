@@ -4,6 +4,7 @@ import { client } from "../src/App"
 import InfiniteListContainer from "../src/InfiniteListContainer.tsx"
 import IntersectingListContainer from "../src/IntersectingListContainer.tsx"
 import current from "./current-catalog.gif"
+import virtualCode from "./virtual-code.png"
 
 export const theme = themes.book
 
@@ -43,11 +44,15 @@ In the Dicty Stock Center web app, our [catalog pages](https://eric.dictybase.de
 - React has moved to a hooks-based approach
 - Increased bundle size (combined > 10kb gzipped)
 
+<center>
+  <Image src={virtualCode} height={400} width={329} />
+</center>
+
 ---
 
 ## Possible Solution?
 
-The `react-virtual` library seemed promising as a replacement at first, but a
+The `react-virtual` hook library seemed promising as a replacement at first, but a
 deeper dive showed its own set of problems:
 
 - Very poor documentation
