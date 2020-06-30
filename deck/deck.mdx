@@ -3,6 +3,7 @@ import { ApolloProvider } from "@apollo/react-hooks"
 import { client } from "../src/App"
 import InfiniteListContainer from "../src/InfiniteListContainer.tsx"
 import IntersectingListContainer from "../src/IntersectingListContainer.tsx"
+import VirtualListContainer from "../src/VirtualListContainer.tsx"
 import current from "./current-catalog.gif"
 import dom from "./dom-rendering.gif"
 import virtualization from "./virtualization.gif"
@@ -21,7 +22,9 @@ export const theme = themes.book
 
 4. Second Attempt
 
-5. Conclusion?
+5. Virtualization Attempt
+
+6. Combining the Concepts
 
 ---
 
@@ -91,7 +94,9 @@ Why don't we just write our own library?
 
 4. Second Attempt
 
-5. Conclusion?
+5. Virtualization Attempt
+
+6. Combining the Concepts
 
 ---
 
@@ -142,7 +147,9 @@ called "list virtualization" (or "windowing").
 
 4. Second Attempt
 
-5. Conclusion?
+5. Virtualization Attempt
+
+6. Combining the Concepts
 
 ---
 
@@ -185,11 +192,19 @@ This solution was inspired by this [blog post](https://upmostly.com/tutorials/bu
 
 ## Issues
 
-- Hundreds of scroll events are fired on a single scroll
+- _Hundreds_ of scroll events are fired on a single scroll
 - Needs throttling or debouncing to minimize the damage
 
 Good news... this approach is now completely unnecessary with the new
-`IntersectionObserver` Web API!
+[IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) Web API!
+
+<center>
+  <Image
+    src="https://media0.giphy.com/media/l2JJyDYEX1tXFmCd2/giphy.gif?cid=ecf05e4717d69e9b52c69bbeea94a43fc5c098c6291a9137&rid=giphy.gif"
+    height={400}
+    width={700}
+  />
+</center>
 
 ---
 
@@ -203,11 +218,33 @@ Good news... this approach is now completely unnecessary with the new
 
 **4. Second Attempt**
 
-5. Conclusion?
+5. Virtualization Attempt
+
+6. Combining the Concepts
 
 ---
 
-## useIntersectingObserver Demo
+## Intersection Observer
+
+From [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API):
+
+The Intersection Observer API provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document’s viewport.
+
+<Image
+  src="https://miro.medium.com/max/1400/1*A8FO5ZwmebF9MDIlmOZOjQ.png"
+  height={379}
+  width={710}
+/>
+
+[Image Source](https://blog.arnellebalane.com/the-intersection-observer-api-d441be0b088d)
+
+---
+
+## useIntersectionObserver
+
+---
+
+## useIntersectionObserver Demo
 
 <ApolloProvider client={client}>
   <IntersectingListContainer />
@@ -225,4 +262,52 @@ Good news... this approach is now completely unnecessary with the new
 
 4. Second Attempt
 
-**5. Conclusion?**
+**5. Virtualization Attempt**
+
+6. Combining the Concepts
+
+---
+
+## useVirtualList
+
+---
+
+## useVirtualList Demo
+
+<ApolloProvider client={client}>
+  <VirtualListContainer />
+</ApolloProvider>
+
+---
+
+# Overview
+
+1. Background
+
+2. Core Concepts
+
+3. First Attempt
+
+4. Second Attempt
+
+5. Virtualization Attempt
+
+**6. Combining the Concepts**
+
+---
+
+## Combination
+
+Wait... these work great solo, now we need to combine them?!?
+
+<center>
+  <Image
+    src="https://media2.giphy.com/media/41cZekVQWbG8ZcghDU/giphy.gif?cid=ecf05e47e38e95da2b0c33cafe98808e3a224e4ad2746f4b&rid=giphy.gif"
+    height={400}
+    width={400}
+  />
+</center>
+
+---
+
+Solution coming soon...
