@@ -1,75 +1,86 @@
-import { themes } from 'mdx-deck'
-import { ApolloProvider } from '@apollo/react-hooks'
-import {client} from '../src/App'
-import InfiniteListContainer from '../src/InfiniteListContainer.tsx'
-import IntersectingListContainer from '../src/IntersectingListContainer.tsx'
+import { Image, themes } from "mdx-deck"
+import { ApolloProvider } from "@apollo/react-hooks"
+import { client } from "../src/App"
+import InfiniteListContainer from "../src/InfiniteListContainer.tsx"
+import IntersectingListContainer from "../src/IntersectingListContainer.tsx"
+import current from "./current-catalog.gif"
 
 export const theme = themes.book
 
-# The Problem
+# Overview
 
-For our stock catalog pages, we were using the **`react-window`** library and two of 
-its companion libraries (**`react-window-infinite-loader`** and **`react-virtualized-auto-sizer`**). 
-While these libraries are popular, their use of nested React render props patterns 
-makes writing proper unit tests very difficult.
+**1. Background**
 
-Rather than rely on these libraries and use unreliable unit tests, we decided to make 
-our own library using the new React standard of hooks. This would be built from the ground 
-up, ensuring we have thoroughly tested our logic piece by piece.
+2. Core Concepts
 
----
+3. First Attempt
 
-## Concepts
+4. Second Attempt
 
-The stock catalog pages use two different concepts for displaying data.
-
-1) Infinite scroll
-- fetches new data every time the user scrolls to a specified 
-part of the viewport
-- fine for some use cases, but can raise performance issues when 1000+ items are 
-rendered while scrolling
-
-2) List virtualization (or 'windowing')
-- only adds the shown part of the viewport to the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction) (fixes performance issue mentioned above)
-- requires specific styling for each element in the viewport
-
-These approaches were tackled one by one, starting with the infinite scroll.
-
+5. Conclusion?
 
 ---
 
-## First Solution Attempt
+# Background
 
-For infinite scrolling, the first idea was to add an on scroll event listener to a 
-parent ref that fires off a function every time the viewport scrolls. We are able to 
-detect when the user reaches the bottom of that viewport with the following logic:
+In the Dicty Stock Center web app, our [catalog pages](https://eric.dictybase.dev/stockcenter/strains) use an infinite scrolling technique to display our full list of stocks.
 
-```js
-container.scrollHeight - container.scrollTop === container.clientHeight
-```
-
-We set up two `useEffect` methods inside of our custom hook. Inside the first one, we 
-use a `handleScroll` function that detects the bottom of the viewport with the above logic 
-and then sets `isFetching` to true if the user has scrolled to the bottom.
-
-The second `useEffect` is only called if `isFetching` is true, and it is here that we 
-fire off a callback function (in our case, to fetch more data). `isFetching` and 
-`setIsFetching` are returned from the hook for use in the component.
-
-This solution was inspired by this [blog post](https://upmostly.com/tutorials/build-an-infinite-scroll-component-in-react-using-react-hooks).
+<Image src={current} height={400} />
 
 ---
 
-## useInfiniteScroll demo
+## Libraries Originally Used
 
-<ApolloProvider client={client}>
-    <InfiniteListContainer />
-</ApolloProvider>
+- `react-window`
+- `react-window-infinite-loader`
+- `react-virtualized-auto-sizer`
 
 ---
 
-## useIntersectingObserver demo
+## Reasons for Change
 
-<ApolloProvider client={client}>
-    <IntersectingListContainer />
-</ApolloProvider>
+- More code complexity due to required nested render props patterns
+- React has moved to a hooks-based approach
+- Increased bundle size (combined > 10kb gzipped)
+
+---
+
+## Possible Solution?
+
+The `react-virtual` library seemed promising as a replacement at first, but a
+deeper dive showed its own set of problems:
+
+- Very poor documentation
+- Little to no unit tests
+- Not clear how it actually works internally
+
+---
+
+## The Solution
+
+After reading into how infinite scrolling works, we discovered that it is actually
+quite simple in its most basic form.
+
+Why don't we just write our own library?
+
+<center>
+  <Image
+    src="https://media3.giphy.com/media/1yk367XVPb3oepJEYQ/giphy.gif?cid=ecf05e4751f54d030df3eec57f1f2a2f25edbb300ae59119&rid=giphy.gif"
+    height={400}
+    width={400}
+  />
+</center>
+
+---
+
+# Overview
+
+1. Background
+
+**2. Core Concepts**
+
+3. First Attempt
+
+4. Second Attempt
+
+5. Conclusion?
