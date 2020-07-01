@@ -6,44 +6,9 @@ import {
   fireEvent,
   queryByTestId,
   getAllByRole,
+  waitFor,
 } from "@testing-library/react"
 import useVirtualIntersection from "./useVirtualIntersection"
-
-const data = Array.from(Array(15).keys(), (n) => n + 1)
-
-const VirtualList = () => {
-  const parentRef = React.useRef<HTMLDivElement>(null)
-  const targetRef = React.useRef<HTMLDivElement>(null)
-  const { items, intersecting } = useVirtualIntersection({
-    parentRef,
-    targetRef,
-    viewportHeight: 310,
-    rowHeight: 35,
-    overscan: 2,
-    numItems: data.length,
-    hasMore: true,
-  })
-
-  const innerHeight = data.length * 35
-
-  return (
-    <div data-testid="parent" ref={parentRef}>
-      <ul style={{ position: "relative", height: `${innerHeight}px` }}>
-        {items.map((item) => {
-          return (
-            <li
-              key={item.index}
-              // @ts-ignore
-              style={item.style}
-              data-testid={`row-${item.index}`}>
-              Row {data[item.index]}
-            </li>
-          )
-        })}
-      </ul>
-    </div>
-  )
-}
 
 describe("useVirtualIntersection", () => {
   describe("virtual list", () => {
@@ -211,6 +176,70 @@ describe("useVirtualIntersection", () => {
   })
 
   describe("scrolling", () => {
+    const VirtualList = () => {
+      const [data, setData] = React.useState(
+        Array.from(Array(15).keys(), (n) => n + 1),
+      )
+      const parentRef = React.useRef<HTMLDivElement>(null)
+      const targetRef = React.useRef<HTMLLIElement>(null)
+      const { items, intersecting } = useVirtualIntersection({
+        parentRef,
+        targetRef,
+        viewportHeight: 310,
+        rowHeight: 35,
+        overscan: 2,
+        numItems: data.length,
+        hasMore: true,
+      })
+
+      const fetchMore = () => {
+        setTimeout(() => {
+          setData((prevState) => [
+            ...prevState,
+            ...Array.from(Array(15).keys(), (n) => n + prevState.length + 1),
+          ])
+        }, 2000)
+      }
+
+      React.useEffect(() => {
+        console.log("intersecting")
+        fetchMore()
+        if (intersecting) {
+        }
+      }, [intersecting])
+
+      return (
+        <div data-testid="parent" ref={parentRef}>
+          <ul style={{ position: "relative", height: `${data.length * 35}px` }}>
+            {items.map((item) => {
+              if (data.length - 1 === item.index) {
+                return (
+                  <li
+                    key={item.index}
+                    ref={targetRef}
+                    // @ts-ignore
+                    style={item.style}
+                    data-testid={`row-${item.index}`}>
+                    Row {data[item.index]}
+                  </li>
+                )
+              }
+
+              return (
+                <li
+                  key={item.index}
+                  // @ts-ignore
+                  style={item.style}
+                  data-testid={`row-${item.index}`}>
+                  Row {data[item.index]}
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      )
+    }
+
     const window = global as any
     window.IntersectionObserver = jest.fn((callback, options) => ({
       observe: jest.fn(),
@@ -244,5 +273,9 @@ describe("useVirtualIntersection", () => {
     it("should not display more rows than the length of data set", () => {
       expect(queryByTestId(parent, "row-15")).toBeFalsy()
     })
+
+    // it("should load next items", async () => {
+    //   await waitFor(() => expect(queryByTestId(parent, "row-16")).toBeTruthy())
+    // })
   })
 })
