@@ -222,7 +222,7 @@ describe("useVirtualIntersection", () => {
     const parent = screen.getByTestId("parent")
     jest.spyOn(parent, "scrollTop", "get").mockImplementation(() => 300)
     fireEvent.scroll(parent)
-    screen.debug()
+
     /**
      * Scrolling down 300px in this case would make the following:
      * startIndex = 6 because (300 / 35) - 2
