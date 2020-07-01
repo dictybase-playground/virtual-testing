@@ -1,6 +1,49 @@
 import React from "react"
 import { renderHook } from "@testing-library/react-hooks"
+import {
+  render,
+  screen,
+  fireEvent,
+  queryByTestId,
+  getAllByRole,
+} from "@testing-library/react"
 import useVirtualIntersection from "./useVirtualIntersection"
+
+const data = Array.from(Array(15).keys(), (n) => n + 1)
+
+const VirtualList = () => {
+  const parentRef = React.useRef<HTMLDivElement>(null)
+  const targetRef = React.useRef<HTMLDivElement>(null)
+  const { items, intersecting } = useVirtualIntersection({
+    parentRef,
+    targetRef,
+    viewportHeight: 310,
+    rowHeight: 35,
+    overscan: 2,
+    numItems: data.length,
+    hasMore: true,
+  })
+
+  const innerHeight = data.length * 35
+
+  return (
+    <div data-testid="parent" ref={parentRef}>
+      <ul style={{ position: "relative", height: `${innerHeight}px` }}>
+        {items.map((item) => {
+          return (
+            <li
+              key={item.index}
+              // @ts-ignore
+              style={item.style}
+              data-testid={`row-${item.index}`}>
+              Row {data[item.index]}
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
 
 describe("useVirtualIntersection", () => {
   describe("virtual list", () => {
@@ -164,6 +207,42 @@ describe("useVirtualIntersection", () => {
         )
         expect(result.current.intersecting).toBeFalsy()
       })
+    })
+  })
+
+  describe("scrolling", () => {
+    const window = global as any
+    window.IntersectionObserver = jest.fn((callback, options) => ({
+      observe: jest.fn(),
+      unobserve: jest.fn(),
+    }))
+
+    render(<VirtualList />)
+
+    const parent = screen.getByTestId("parent")
+    jest.spyOn(parent, "scrollTop", "get").mockImplementation(() => 300)
+    fireEvent.scroll(parent)
+    screen.debug()
+    /**
+     * Scrolling down 300px in this case would make the following:
+     * startIndex = 6 because (300 / 35) - 2
+     * endIndex = 14 because 15 - 1 where 15 is numItems
+     */
+
+    it("should no longer display first row", () => {
+      expect(queryByTestId(parent, "row-1")).toBeFalsy()
+    })
+    it("should not display row with index 5", () => {
+      expect(queryByTestId(parent, "row-5")).toBeFalsy()
+    })
+    it("should start with row with index 6", () => {
+      expect(queryByTestId(parent, "row-6")).toBeTruthy()
+    })
+    it("should show nine list items", () => {
+      expect(getAllByRole(parent, "listitem").length).toBe(9)
+    })
+    it("should not display more rows than the length of data set", () => {
+      expect(queryByTestId(parent, "row-15")).toBeFalsy()
     })
   })
 })
