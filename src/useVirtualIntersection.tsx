@@ -1,8 +1,8 @@
 import React from "react"
 
 type ConfigParams = {
-  /** React ref used to access DOM node */
-  ref: React.MutableRefObject<any>
+  /** React ref for element that is used as viewport for checking visibility of target */
+  parentRef: React.MutableRefObject<any>
   /** Height of the scrollable area (inner container) */
   viewportHeight: number
   /** Height of individual row */
@@ -11,14 +11,27 @@ type ConfigParams = {
   numItems: number
   /** Number of elements to render above and below viewport */
   overscan?: number
+  /** React ref used to access DOM node */
+  targetRef: React.MutableRefObject<any>
+  /** Margin around the root */
+  rootMargin?: string
+  /** Indicates the percentage of the target's visibility the observer's
+   * callback should be executed */
+  threshold?: number
+  /** Indicates whether there are more items to fetch */
+  hasMore: boolean
 }
 
 const useVirtualIntersection = ({
-  ref,
+  parentRef,
+  targetRef,
   viewportHeight,
   rowHeight,
   numItems,
   overscan,
+  rootMargin = "0px",
+  threshold = 0.25,
+  hasMore,
 }: ConfigParams) => {
   /**
    * scrollTop measures how far the inner container is scrolled.
@@ -26,6 +39,7 @@ const useVirtualIntersection = ({
    * height.
    */
   const [scrollTop, setScrollTop] = React.useState(0)
+  const [intersecting, setIntersecting] = React.useState(false)
 
   let startIndex = Math.floor(scrollTop / rowHeight)
   let endIndex = Math.min(
@@ -61,16 +75,40 @@ const useVirtualIntersection = ({
   }
 
   React.useEffect(() => {
-    if (ref && ref.current) {
-      const element = ref.current
+    if (parentRef && parentRef.current) {
+      const element = parentRef.current
       element.addEventListener("scroll", handleScroll)
 
       return () => element.removeEventListener("scroll", handleScroll)
     }
     return
-  }, [ref])
+  }, [parentRef])
 
-  return { items }
+  React.useEffect(() => {
+    const callback = (entries: IntersectionObserverEntry[]) => {
+      if (hasMore) {
+        setIntersecting(entries[0].isIntersecting)
+      }
+    }
+    let element,
+      target: any = null
+    if (parentRef && parentRef.current) {
+      element = parentRef.current
+    }
+    const observer = new IntersectionObserver(callback, {
+      root: element,
+      rootMargin: rootMargin,
+      threshold: threshold,
+    })
+    if (targetRef && targetRef.current) {
+      target = targetRef.current
+      observer.observe(target)
+    }
+
+    return () => observer.unobserve(target)
+  }, [hasMore, intersecting, parentRef, rootMargin, targetRef, threshold])
+
+  return { items, intersecting }
 }
 
 export default useVirtualIntersection
