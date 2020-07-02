@@ -103,7 +103,7 @@ const useVirtualIntersection = ({
       rootMargin,
       threshold,
     })
-    if (targetRef && targetRef) {
+    if (targetRef) {
       observerRef.current.observe(targetRef)
     }
   }, [observerCallback, rootMargin, targetRef, threshold])
