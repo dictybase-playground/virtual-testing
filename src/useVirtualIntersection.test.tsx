@@ -13,12 +13,10 @@ import useVirtualIntersection from "./useVirtualIntersection"
 describe("useVirtualIntersection", () => {
   describe("virtual list", () => {
     let parentRef = null as any
-    let targetRef = null as any
     const window = global as any
 
     beforeAll(() => {
       parentRef = { current: null }
-      targetRef = { current: null }
     })
     afterEach(() => {
       jest.clearAllMocks()
@@ -26,12 +24,11 @@ describe("useVirtualIntersection", () => {
     describe("items returned", () => {
       window.IntersectionObserver = jest.fn((callback, options) => ({
         observe: jest.fn(),
-        unobserve: jest.fn(),
+        disconnect: jest.fn(),
       }))
       const { result } = renderHook(() =>
         useVirtualIntersection({
           parentRef,
-          targetRef,
           rowHeight: 30,
           numItems: 100,
           viewportHeight: 300,
@@ -52,7 +49,6 @@ describe("useVirtualIntersection", () => {
       const { result } = renderHook(() =>
         useVirtualIntersection({
           parentRef,
-          targetRef,
           rowHeight: 30,
           numItems: 100,
           viewportHeight: 300,
@@ -75,24 +71,22 @@ describe("useVirtualIntersection", () => {
 
   describe("intersection observer", () => {
     let parentRef = null as any
-    let targetRef = null as any
     const window = global as any
     let mockObserve: jest.Mock
-    let mockUnobserve: jest.Mock
+    let mockDisconnect: jest.Mock
 
     beforeAll(() => {
       parentRef = { current: null }
-      targetRef = { current: <div /> }
     })
-    describe("observe and unobserve methods", () => {
+    describe("observe and disconnect methods", () => {
       beforeEach(() => {
         mockObserve = jest.fn()
-        mockUnobserve = jest.fn()
+        mockDisconnect = jest.fn()
       })
       beforeAll(() => {
         window.IntersectionObserver = jest.fn((callback, options) => ({
           observe: mockObserve,
-          unobserve: mockUnobserve,
+          disconnect: mockDisconnect,
         }))
       })
       afterEach(() => {
@@ -102,7 +96,6 @@ describe("useVirtualIntersection", () => {
         renderHook(() =>
           useVirtualIntersection({
             parentRef,
-            targetRef,
             hasMore: true,
             rowHeight: 30,
             numItems: 100,
@@ -110,23 +103,22 @@ describe("useVirtualIntersection", () => {
           }),
         )
         expect(mockObserve).toHaveBeenCalledTimes(1)
-        expect(mockUnobserve).toHaveBeenCalledTimes(0)
+        expect(mockDisconnect).toHaveBeenCalledTimes(0)
       })
 
-      it("should call unobserve method only on unmount", () => {
+      it("should call disconnect method only on unmount", () => {
         const { unmount } = renderHook(() =>
           useVirtualIntersection({
             parentRef,
-            targetRef,
             hasMore: true,
             rowHeight: 30,
             numItems: 100,
             viewportHeight: 300,
           }),
         )
-        expect(mockUnobserve).toHaveBeenCalledTimes(0)
+        expect(mockDisconnect).toHaveBeenCalledTimes(0)
         unmount()
-        expect(mockUnobserve).toHaveBeenCalledTimes(1)
+        expect(mockDisconnect).toHaveBeenCalledTimes(1)
       })
     })
 
@@ -136,13 +128,12 @@ describe("useVirtualIntersection", () => {
           callback([{ isIntersecting: true }])
           return {
             observe: mockObserve,
-            unobserve: mockUnobserve,
+            disconnect: mockDisconnect,
           }
         })
         const { result } = renderHook(() =>
           useVirtualIntersection({
             parentRef,
-            targetRef,
             hasMore: true,
             rowHeight: 30,
             numItems: 100,
@@ -157,13 +148,12 @@ describe("useVirtualIntersection", () => {
           callback([{ isIntersecting: false }])
           return {
             observe: mockObserve,
-            unobserve: mockUnobserve,
+            disconnect: mockDisconnect,
           }
         })
         const { result } = renderHook(() =>
           useVirtualIntersection({
             parentRef,
-            targetRef,
             hasMore: false,
             rowHeight: 30,
             numItems: 100,
@@ -176,15 +166,15 @@ describe("useVirtualIntersection", () => {
   })
 
   describe("scrolling", () => {
+    let testfn = jest.fn()
     const VirtualList = () => {
       const [data, setData] = React.useState(
         Array.from(Array(15).keys(), (n) => n + 1),
       )
       const parentRef = React.useRef<HTMLDivElement>(null)
-      const targetRef = React.useRef<HTMLLIElement>(null)
-      const { items, intersecting } = useVirtualIntersection({
+      // const targetRef = React.useRef<HTMLLIElement>(null)
+      const { items, intersecting, setTargetRef } = useVirtualIntersection({
         parentRef,
-        targetRef,
         viewportHeight: 310,
         rowHeight: 35,
         overscan: 2,
@@ -198,13 +188,14 @@ describe("useVirtualIntersection", () => {
             ...prevState,
             ...Array.from(Array(15).keys(), (n) => n + prevState.length + 1),
           ])
-        }, 2000)
+        }, 200)
       }
 
       React.useEffect(() => {
         if (intersecting) {
           console.log("intersecting")
           fetchMore()
+          testfn()
         }
       }, [intersecting])
 
@@ -219,7 +210,7 @@ describe("useVirtualIntersection", () => {
                 return (
                   <li
                     key={item.index}
-                    ref={targetRef}
+                    ref={setTargetRef}
                     // @ts-ignore
                     style={item.style}
                     data-testid={`row-${item.index}`}>
@@ -246,14 +237,8 @@ describe("useVirtualIntersection", () => {
     const window = global as any
     window.IntersectionObserver = jest.fn((callback, options) => ({
       observe: jest.fn(),
-      unobserve: jest.fn(),
+      disconnect: jest.fn(),
     }))
-
-    render(<VirtualList />)
-
-    const parent = screen.getByTestId("parent")
-    jest.spyOn(parent, "scrollTop", "get").mockImplementation(() => 300)
-    fireEvent.scroll(parent)
 
     /**
      * Scrolling down 300px in this case would make the following:
@@ -261,29 +246,32 @@ describe("useVirtualIntersection", () => {
      * endIndex = 14 because 15 - 1 where 15 is numItems
      */
 
-    it("should no longer display first row", () => {
+    it("should display correct rows on scroll", () => {
+      render(<VirtualList />)
+      const parent = screen.getByTestId("parent")
+      jest.spyOn(parent, "scrollTop", "get").mockImplementation(() => 300)
+      fireEvent.scroll(parent)
       expect(queryByTestId(parent, "row-1")).toBeFalsy()
-    })
-    it("should not display row with index 5", () => {
       expect(queryByTestId(parent, "row-5")).toBeFalsy()
-    })
-    it("should start with row with index 6", () => {
+      // start with row-6
       expect(queryByTestId(parent, "row-6")).toBeTruthy()
-    })
-    it("should show nine list items", () => {
+      // end at row-14
+      expect(queryByTestId(parent, "row-15")).toBeFalsy()
+      // shows all nine items
       expect(getAllByRole(parent, "listitem").length).toBe(9)
     })
-    it("should not display more rows than the length of data set", () => {
-      expect(queryByTestId(parent, "row-15")).toBeFalsy()
+    it("should load next items", async () => {
+      render(<VirtualList />)
+      const parent = screen.getByTestId("parent")
+      jest.spyOn(parent, "scrollTop", "get").mockImplementation(() => 400)
+      fireEvent.scroll(parent)
+      // screen.debug()
+      await waitFor(() => expect(testfn).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(queryByTestId(parent, "row-16")).toBeTruthy())
+      screen.debug()
     })
-
-    // it("should load next items", () => {
-    //   jest.spyOn(parent, "scrollTop", "get").mockImplementation(() => 600)
-    //   fireEvent.scroll(parent)
-    // })
     // it("should load next items", async () => {
     //   await waitFor(() => expect(queryByTestId(parent, "row-16")).toBeTruthy())
     // })
-    // screen.debug()
   })
 })

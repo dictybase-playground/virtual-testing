@@ -11,8 +11,6 @@ type ConfigParams = {
   numItems: number
   /** Number of elements to render above and below viewport */
   overscan?: number
-  /** React ref used to access DOM node */
-  targetRef: React.MutableRefObject<any>
   /** Margin around the root */
   rootMargin?: string
   /** Indicates the percentage of the target's visibility the observer's
@@ -24,7 +22,6 @@ type ConfigParams = {
 
 const useVirtualIntersection = ({
   parentRef,
-  targetRef,
   viewportHeight,
   rowHeight,
   numItems,
@@ -40,6 +37,8 @@ const useVirtualIntersection = ({
    */
   const [scrollTop, setScrollTop] = React.useState(0)
   const [intersecting, setIntersecting] = React.useState(false)
+  const [targetRef, setTargetRef] = React.useState(null)
+  const observerRef = React.useRef<any>(null)
 
   let startIndex = Math.floor(scrollTop / rowHeight)
   let endIndex = Math.min(
@@ -84,31 +83,40 @@ const useVirtualIntersection = ({
     return
   }, [parentRef])
 
-  React.useEffect(() => {
-    const callback = (entries: IntersectionObserverEntry[]) => {
+  const observerCallback = React.useCallback(
+    ([entry]: IntersectionObserverEntry[]) => {
       if (hasMore) {
-        setIntersecting(entries[0].isIntersecting)
+        setIntersecting(entry.isIntersecting)
       }
+    },
+    [hasMore],
+  )
+
+  const disconnect = React.useCallback(() => {
+    if (observerRef && observerRef.current) {
+      observerRef.current.disconnect()
     }
-    let element,
-      target: any = null
-    if (parentRef && parentRef.current) {
-      element = parentRef.current
-    }
-    const observer = new IntersectionObserver(callback, {
-      root: element,
-      rootMargin: rootMargin,
-      threshold: threshold,
+  }, [])
+
+  const observe = React.useCallback(() => {
+    observerRef.current = new IntersectionObserver(observerCallback, {
+      rootMargin,
+      threshold,
     })
-    if (targetRef && targetRef.current) {
-      target = targetRef.current
-      observer.observe(target)
+    if (targetRef && targetRef) {
+      observerRef.current.observe(targetRef)
     }
+  }, [observerCallback, rootMargin, targetRef, threshold])
 
-    return () => observer.unobserve(target)
-  }, [hasMore, intersecting, parentRef, rootMargin, targetRef, threshold])
+  // useLayoutEffect runs synchronously after React has performed all DOM mutations
+  React.useLayoutEffect(() => {
+    observe()
+    return () => {
+      disconnect()
+    }
+  }, [observe, disconnect])
 
-  return { items, intersecting }
+  return { items, intersecting, setTargetRef }
 }
 
 export default useVirtualIntersection
