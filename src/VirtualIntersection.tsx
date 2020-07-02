@@ -34,6 +34,7 @@ const VirtualList = () => {
 
   return (
     <div
+      id="parent-ref"
       data-testid="parent"
       ref={parentRef}
       style={{ height: "310px", overflow: "auto" }}>
