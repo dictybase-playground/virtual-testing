@@ -202,14 +202,17 @@ describe("useVirtualIntersection", () => {
       }
 
       React.useEffect(() => {
-        console.log("intersecting")
-        fetchMore()
         if (intersecting) {
+          console.log("intersecting")
+          fetchMore()
         }
       }, [intersecting])
 
       return (
-        <div data-testid="parent" ref={parentRef}>
+        <div
+          data-testid="parent"
+          ref={parentRef}
+          style={{ height: "310px", overflow: "auto" }}>
           <ul style={{ position: "relative", height: `${data.length * 35}px` }}>
             {items.map((item) => {
               if (data.length - 1 === item.index) {
@@ -274,8 +277,13 @@ describe("useVirtualIntersection", () => {
       expect(queryByTestId(parent, "row-15")).toBeFalsy()
     })
 
+    // it("should load next items", () => {
+    //   jest.spyOn(parent, "scrollTop", "get").mockImplementation(() => 600)
+    //   fireEvent.scroll(parent)
+    // })
     // it("should load next items", async () => {
     //   await waitFor(() => expect(queryByTestId(parent, "row-16")).toBeTruthy())
     // })
+    // screen.debug()
   })
 })
