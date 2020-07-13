@@ -1,5 +1,8 @@
 import React from "react"
 
+// reference for why we are using callback for ref:
+// https://medium.com/@teh_builder/ref-objects-inside-useeffect-hooks-eb7c15198780
+
 type ConfigParams = {
   /** React ref for element that is used as viewport for checking visibility of target */
   parentRef: React.MutableRefObject<any>
