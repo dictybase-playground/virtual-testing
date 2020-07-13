@@ -40,6 +40,7 @@ const useVirtualIntersection = ({
   const [targetRef, setTargetRef] = React.useState(null)
   const observerRef = React.useRef<any>(null)
 
+  // calculate the start and end indexes of list items to render to DOM
   let startIndex = Math.floor(scrollTop / rowHeight)
   let endIndex = Math.min(
     numItems - 1, // don't render past the end of the list
@@ -73,6 +74,7 @@ const useVirtualIntersection = ({
     setScrollTop(event.currentTarget.scrollTop)
   }
 
+  // add scroll event listener to parent ref
   React.useEffect(() => {
     if (parentRef && parentRef.current) {
       const element = parentRef.current
@@ -83,6 +85,8 @@ const useVirtualIntersection = ({
     return
   }, [parentRef])
 
+  // set up callback fn that updates isIntersecting state if there is
+  // more data to fetch
   const observerCallback = React.useCallback(
     ([entry]: IntersectionObserverEntry[]) => {
       if (hasMore) {
@@ -92,23 +96,28 @@ const useVirtualIntersection = ({
     [hasMore],
   )
 
+  // callback fn that adds intersection observer to observer ref
+  // and observes the target ref if it exists
+  const observe = React.useCallback(() => {
+    observerRef.current = new IntersectionObserver(observerCallback, {
+      rootMargin,
+      threshold,
+    })
+
+    if (targetRef) {
+      observerRef.current.observe(targetRef)
+    }
+  }, [observerCallback, rootMargin, targetRef, threshold])
+
+  // standard callback fn to disconnect from observer
   const disconnect = React.useCallback(() => {
     if (observerRef && observerRef.current) {
       observerRef.current.disconnect()
     }
   }, [])
 
-  const observe = React.useCallback(() => {
-    observerRef.current = new IntersectionObserver(observerCallback, {
-      rootMargin,
-      threshold,
-    })
-    if (targetRef) {
-      observerRef.current.observe(targetRef)
-    }
-  }, [observerCallback, rootMargin, targetRef, threshold])
-
   // useLayoutEffect runs synchronously after React has performed all DOM mutations
+  // here we use it to set up the intersection observer
   React.useLayoutEffect(() => {
     observe()
     return () => {
