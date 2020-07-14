@@ -119,9 +119,8 @@ const useVirtualIntersection = ({
     }
   }, [])
 
-  // useLayoutEffect runs synchronously after React has performed all DOM mutations
-  // here we use it to set up the intersection observer
-  React.useLayoutEffect(() => {
+  // set up the intersection observer
+  React.useEffect(() => {
     observe()
     return () => {
       disconnect()
