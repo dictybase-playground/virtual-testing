@@ -12,9 +12,7 @@ import useVirtualIntersection from "./useVirtualIntersection"
 /**
  * TODO:
  *
- * 1. Determine why observe test is now failing (likely need to mock targetRef)
- * 2. Fetch real data rather than use timeouts
- * 3. Test the output after fetching
+ * 1. Test the output after fetching data (either mock the timeout or use "real" data)
  */
 
 describe("useVirtualIntersection", () => {
@@ -82,51 +80,21 @@ describe("useVirtualIntersection", () => {
     let mockObserve: jest.Mock
     let mockDisconnect: jest.Mock
 
+    beforeEach(() => {
+      mockObserve = jest.fn()
+      mockDisconnect = jest.fn()
+    })
+
     beforeAll(() => {
       parentRef = { current: null }
+      window.IntersectionObserver = jest.fn((callback, options) => ({
+        observe: mockObserve,
+        disconnect: mockDisconnect,
+      }))
     })
-    describe("observe and disconnect methods", () => {
-      beforeEach(() => {
-        mockObserve = jest.fn()
-        mockDisconnect = jest.fn()
-      })
-      beforeAll(() => {
-        window.IntersectionObserver = jest.fn((callback, options) => ({
-          observe: mockObserve,
-          disconnect: mockDisconnect,
-        }))
-      })
-      afterEach(() => {
-        jest.clearAllMocks()
-      })
-      it("should call observe when ref is passed", () => {
-        renderHook(() =>
-          useVirtualIntersection({
-            parentRef,
-            hasMore: true,
-            rowHeight: 30,
-            numItems: 100,
-            viewportHeight: 300,
-          }),
-        )
-        expect(mockObserve).toHaveBeenCalledTimes(1)
-        expect(mockDisconnect).toHaveBeenCalledTimes(0)
-      })
 
-      it("should call disconnect method only on unmount", () => {
-        const { unmount } = renderHook(() =>
-          useVirtualIntersection({
-            parentRef,
-            hasMore: true,
-            rowHeight: 30,
-            numItems: 100,
-            viewportHeight: 300,
-          }),
-        )
-        expect(mockDisconnect).toHaveBeenCalledTimes(0)
-        unmount()
-        expect(mockDisconnect).toHaveBeenCalledTimes(1)
-      })
+    afterEach(() => {
+      jest.clearAllMocks()
     })
 
     describe("isIntersecting", () => {
@@ -174,6 +142,26 @@ describe("useVirtualIntersection", () => {
 
   describe("scrolling", () => {
     let testfn = jest.fn()
+    let mockObserve: jest.Mock
+    let mockDisconnect: jest.Mock
+
+    const window = global as any
+
+    beforeEach(() => {
+      mockObserve = jest.fn()
+      mockDisconnect = jest.fn()
+    })
+
+    beforeAll(() => {
+      window.IntersectionObserver = jest.fn((callback, options) => ({
+        observe: mockObserve,
+        disconnect: mockDisconnect,
+      }))
+    })
+    afterEach(() => {
+      jest.clearAllMocks()
+    })
+
     const VirtualList = () => {
       const [data, setData] = React.useState(
         Array.from(Array(15).keys(), (n) => n + 1),
@@ -242,12 +230,6 @@ describe("useVirtualIntersection", () => {
       )
     }
 
-    const window = global as any
-    window.IntersectionObserver = jest.fn((callback, options) => ({
-      observe: jest.fn(),
-      disconnect: jest.fn(),
-    }))
-
     /**
      * Scrolling down 300px in this case would make the following:
      * startIndex = 6 because (300 / 35) - 2
@@ -257,13 +239,21 @@ describe("useVirtualIntersection", () => {
     it("should display correct rows on scroll", () => {
       render(<VirtualList />)
       const parent = screen.getByTestId("parent")
+      // does not call observe method when not intersected
+      expect(mockObserve).toHaveBeenCalledTimes(0)
+      // set up and fire the scroll event
       jest.spyOn(parent, "scrollTop", "get").mockImplementation(() => 300)
       fireEvent.scroll(parent)
+      // now observe and disconnect cleanup should have been called
+      expect(mockObserve).toHaveBeenCalledTimes(1)
+      expect(mockDisconnect).toHaveBeenCalledTimes(1)
+      // verify the early rows are no longer rendered
       expect(queryByTestId(parent, "row-1")).toBeFalsy()
       expect(queryByTestId(parent, "row-5")).toBeFalsy()
       // start with row-6
       expect(queryByTestId(parent, "row-6")).toBeTruthy()
       // end at row-14
+      expect(queryByTestId(parent, "row-14")).toBeTruthy()
       expect(queryByTestId(parent, "row-15")).toBeFalsy()
       // shows all nine items
       expect(getAllByRole(parent, "listitem").length).toBe(9)
