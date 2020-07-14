@@ -3,8 +3,7 @@ import Paper from "@material-ui/core/Paper"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import { makeStyles } from "@material-ui/core/styles"
-import useVirtualList from "./useVirtualList"
-import useIntersectingRef from "./useIntersectingRef"
+import useVirtualIntersection from "./useVirtualIntersection"
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -41,42 +40,41 @@ const InfiniteVirtualList = ({
   hasMore,
   isLoadingMore,
 }: Props) => {
-  const rootRef = React.useRef<HTMLDivElement>(null)
-  const rowData = useVirtualList({
-    ref: rootRef,
-    rowHeight: 35,
-    numItems: data.length,
+  const parentRef = React.useRef<HTMLDivElement>(null)
+  const { items, intersecting, setTargetRef } = useVirtualIntersection({
+    parentRef,
     viewportHeight: 310,
-    // overscan: 2,
-  })
-  const [visible, ref] = useIntersectingRef({
-    hasMore,
+    rowHeight: 35,
+    overscan: 2,
+    numItems: data.length,
+    hasMore: true,
   })
   const classes = useStyles()
   // total height of the list itself
   const innerHeight = data.length * 35
 
   React.useEffect(() => {
-    if (visible && hasMore) {
+    if (intersecting && hasMore) {
       loadMore()
     }
-  }, [hasMore, loadMore, visible])
+  }, [hasMore, intersecting, loadMore])
 
   return (
-    <Paper ref={rootRef} className={classes.container}>
+    <Paper ref={parentRef} className={classes.container}>
       <List style={{ position: "relative", height: `${innerHeight}px` }}>
-        {rowData.items.map((item: any) => {
+        {items.map((item: any) => {
           const strain = data[item.index]
           if (data.length - 1 === item.index) {
             return (
               <ListItem
                 // @ts-ignore
-                ref={ref}
+                ref={setTargetRef}
                 key={item.index}
                 id={`row-${item.index}`}
+                data-testid={`row-${item.index}`}
                 className={classes.row}
                 style={item.style}>
-                abcd
+                ABCD ABCD ABCD
               </ListItem>
             )
           }
@@ -84,6 +82,7 @@ const InfiniteVirtualList = ({
             <ListItem
               key={item.index}
               id={`row-${item.index}`}
+              data-testid={`row-${item.index}`}
               className={classes.row}
               style={item.style}>
               <strong>ID:</strong>&nbsp;{strain.id} &nbsp;
