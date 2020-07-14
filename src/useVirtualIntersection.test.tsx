@@ -1,11 +1,13 @@
 import React from "react"
 import { renderHook } from "@testing-library/react-hooks"
 import {
+  act,
   render,
   screen,
   fireEvent,
   queryByTestId,
   getAllByRole,
+  waitFor,
 } from "@testing-library/react"
 import useVirtualIntersection from "./useVirtualIntersection"
 
@@ -178,12 +180,10 @@ describe("useVirtualIntersection", () => {
       })
 
       const fetchMore = () => {
-        setTimeout(() => {
-          setData((prevState) => [
-            ...prevState,
-            ...Array.from(Array(15).keys(), (n) => n + prevState.length + 1),
-          ])
-        }, 200)
+        setData((prevState) => [
+          ...prevState,
+          ...Array.from(Array(15).keys(), (n) => n + prevState.length + 1),
+        ])
       }
 
       React.useEffect(() => {
@@ -241,9 +241,8 @@ describe("useVirtualIntersection", () => {
       const parent = screen.getByTestId("parent")
       // does not call observe method when not intersected
       expect(mockObserve).toHaveBeenCalledTimes(0)
-      // set up and fire the scroll event
-      jest.spyOn(parent, "scrollTop", "get").mockImplementation(() => 300)
-      fireEvent.scroll(parent)
+      // fire the scroll event
+      fireEvent.scroll(parent, { target: { scrollTop: 300 } })
       // now observe and disconnect cleanup should have been called
       expect(mockObserve).toHaveBeenCalledTimes(1)
       expect(mockDisconnect).toHaveBeenCalledTimes(1)
@@ -261,8 +260,9 @@ describe("useVirtualIntersection", () => {
     // it("should load next items", async () => {
     //   render(<VirtualList />)
     //   const parent = screen.getByTestId("parent")
-    //   jest.spyOn(parent, "scrollTop", "get").mockImplementation(() => 400)
-    //   fireEvent.scroll(parent)
+    //   await act(async () => {
+    //     fireEvent.scroll(parent, { target: { scrollTop: 400 } })
+    //   })
     //   await waitFor(() => expect(testfn).toHaveBeenCalledTimes(1))
     //   await waitFor(() => expect(queryByTestId(parent, "row-16")).toBeTruthy())
     // })
