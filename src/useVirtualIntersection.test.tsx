@@ -11,12 +11,6 @@ import {
 } from "@testing-library/react"
 import useVirtualIntersection from "./useVirtualIntersection"
 
-/**
- * TODO:
- *
- * 1. Test the output after fetching data (either mock the timeout or use "real" data)
- */
-
 describe("useVirtualIntersection", () => {
   describe("virtual list", () => {
     let parentRef = null as any
@@ -154,12 +148,6 @@ describe("useVirtualIntersection", () => {
       mockDisconnect = jest.fn()
     })
 
-    beforeAll(() => {
-      window.IntersectionObserver = jest.fn((callback, options) => ({
-        observe: mockObserve,
-        disconnect: mockDisconnect,
-      }))
-    })
     afterEach(() => {
       jest.clearAllMocks()
     })
@@ -188,7 +176,6 @@ describe("useVirtualIntersection", () => {
 
       React.useEffect(() => {
         if (intersecting) {
-          console.log("intersecting")
           fetchMore()
           testfn()
         }
@@ -237,6 +224,10 @@ describe("useVirtualIntersection", () => {
      */
 
     it("should display correct rows on scroll", () => {
+      window.IntersectionObserver = jest.fn((callback, options) => ({
+        observe: mockObserve,
+        disconnect: mockDisconnect,
+      }))
       render(<VirtualList />)
       const parent = screen.getByTestId("parent")
       // does not call observe method when not intersected
@@ -257,14 +248,23 @@ describe("useVirtualIntersection", () => {
       // shows all nine items
       expect(getAllByRole(parent, "listitem").length).toBe(9)
     })
-    // it("should load next items", async () => {
-    //   render(<VirtualList />)
-    //   const parent = screen.getByTestId("parent")
-    //   await act(async () => {
-    //     fireEvent.scroll(parent, { target: { scrollTop: 400 } })
-    //   })
-    //   await waitFor(() => expect(testfn).toHaveBeenCalledTimes(1))
-    //   await waitFor(() => expect(queryByTestId(parent, "row-16")).toBeTruthy())
-    // })
+    it("should load next items", async () => {
+      window.IntersectionObserver = jest.fn((callback) => {
+        callback([{ isIntersecting: true }])
+        return {
+          observe: mockObserve,
+          disconnect: mockDisconnect,
+        }
+      })
+      render(<VirtualList />)
+      const parent = screen.getByTestId("parent")
+      fireEvent.scroll(parent, { target: { scrollTop: 300 } })
+      await waitFor(() => expect(testfn).toHaveBeenCalledTimes(1))
+      // should show rows past 15
+      expect(queryByTestId(parent, "row-16")).toBeTruthy()
+      expect(queryByTestId(parent, "row-19")).toBeTruthy()
+      // shouldn't show earlier row
+      expect(queryByTestId(parent, "row-5")).toBeFalsy()
+    })
   })
 })
