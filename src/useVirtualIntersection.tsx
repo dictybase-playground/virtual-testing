@@ -128,7 +128,7 @@ const useVirtualIntersection = ({
     }
   }, [observe, disconnect])
 
-  return { items, intersecting, setTargetRef }
+  return { items, intersecting, setIntersecting, setTargetRef }
 }
 
 export default useVirtualIntersection

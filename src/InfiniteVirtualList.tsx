@@ -32,6 +32,7 @@ type Props = {
   loadMore: () => void
   hasMore: boolean
   isLoadingMore: boolean
+  totalItems: number
 }
 
 const InfiniteVirtualList = ({
@@ -39,9 +40,15 @@ const InfiniteVirtualList = ({
   loadMore,
   hasMore,
   isLoadingMore,
+  totalItems,
 }: Props) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
-  const { items, intersecting, setTargetRef } = useVirtualIntersection({
+  const {
+    items,
+    intersecting,
+    setTargetRef,
+    setIntersecting,
+  } = useVirtualIntersection({
     parentRef,
     viewportHeight: 310,
     rowHeight: 35,
@@ -56,15 +63,17 @@ const InfiniteVirtualList = ({
   React.useEffect(() => {
     if (intersecting && hasMore) {
       loadMore()
+      setIntersecting(false)
     }
-  }, [hasMore, intersecting, loadMore])
+  }, [hasMore, intersecting, loadMore, setIntersecting])
 
   return (
     <Paper ref={parentRef} className={classes.container}>
       <List style={{ position: "relative", height: `${innerHeight}px` }}>
         {items.map((item: any) => {
           const strain = data[item.index]
-          if (data.length - 1 === item.index) {
+
+          if (totalItems - 1 === item.index) {
             return (
               <ListItem
                 // @ts-ignore
@@ -74,7 +83,7 @@ const InfiniteVirtualList = ({
                 data-testid={`row-${item.index}`}
                 className={classes.row}
                 style={item.style}>
-                ABCD ABCD ABCD
+                Loading more items...
               </ListItem>
             )
           }

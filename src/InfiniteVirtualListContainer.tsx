@@ -4,6 +4,7 @@ import InfiniteVirtualList from "./InfiniteVirtualList"
 import { GET_STRAIN_LIST } from "./query"
 
 const InfiniteVirtualListContainer = () => {
+  const [totalItems, setTotalItems] = React.useState(0)
   const [hasMore, setHasMore] = React.useState(true)
   const [isLoadingMore, setIsLoadingMore] = React.useState(false)
   const [prevCursor, setPrevCursor] = React.useState(null)
@@ -34,6 +35,7 @@ const InfiniteVirtualListContainer = () => {
       },
       updateQuery: (previousResult: any, { fetchMoreResult }: any) => {
         setIsLoadingMore(false)
+
         const previousEntry = previousResult.listStrains
         const previousStrains = previousEntry.strains
         const newStrains = fetchMoreResult.listStrains.strains
@@ -43,6 +45,8 @@ const InfiniteVirtualListContainer = () => {
         if (newCursor === 0) {
           setHasMore(false)
         }
+
+        setTotalItems(totalItems + newStrains.length)
 
         return {
           listStrains: {
@@ -55,12 +59,17 @@ const InfiniteVirtualListContainer = () => {
     })
   }
 
+  if (totalItems === 0) {
+    setTotalItems(data.listStrains.strains.length)
+  }
+
   return (
     <InfiniteVirtualList
       data={data.listStrains.strains}
       loadMore={loadMoreItems}
       hasMore={hasMore}
       isLoadingMore={isLoadingMore}
+      totalItems={totalItems}
     />
   )
 }
