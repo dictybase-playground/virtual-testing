@@ -41,6 +41,7 @@ const useVirtualIntersection = ({
   const [scrollTop, setScrollTop] = React.useState(0)
   const [intersecting, setIntersecting] = React.useState(false)
   const [targetRef, setTargetRef] = React.useState(null)
+  const prevTargetRef = React.useRef<any>(targetRef)
   const observerRef = React.useRef<any>(null)
 
   // calculate the start and end indexes of list items to render to DOM
@@ -88,6 +89,11 @@ const useVirtualIntersection = ({
     return
   }, [parentRef])
 
+  // update prevTargetRef if targetRef value changes
+  React.useEffect(() => {
+    prevTargetRef.current = targetRef
+  }, [targetRef])
+
   // set up callback fn that updates isIntersecting state if there is
   // more data to fetch
   const observerCallback = React.useCallback(
@@ -106,6 +112,12 @@ const useVirtualIntersection = ({
       rootMargin,
       threshold,
     })
+
+    // if the target ref has been updated, set intersecting to false;
+    // this prevents unwanted extra fetches
+    if (targetRef !== prevTargetRef) {
+      setIntersecting(false)
+    }
 
     if (targetRef) {
       observerRef.current.observe(targetRef)
