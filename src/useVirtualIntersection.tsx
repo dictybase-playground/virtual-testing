@@ -113,12 +113,6 @@ const useVirtualIntersection = ({
       threshold,
     })
 
-    // if the target ref matches the previous ref, set intersecting to false;
-    // this prevents unwanted extra fetches
-    if (targetRef === prevTargetRef.current) {
-      setIntersecting(false)
-    }
-
     if (targetRef) {
       observerRef.current.observe(targetRef)
     }
@@ -133,11 +127,16 @@ const useVirtualIntersection = ({
 
   // set up the intersection observer
   React.useEffect(() => {
+    // if the target ref matches the previous ref, set intersecting to false;
+    // this prevents unwanted extra fetches
+    if (targetRef === prevTargetRef.current) {
+      setIntersecting(false)
+    }
     observe()
     return () => {
       disconnect()
     }
-  }, [observe, disconnect])
+  }, [observe, disconnect, targetRef])
 
   return { items, intersecting, setIntersecting, setTargetRef }
 }
