@@ -113,9 +113,9 @@ const useVirtualIntersection = ({
       threshold,
     })
 
-    // if the target ref has been updated, set intersecting to false;
+    // if the target ref matches the previous ref, set intersecting to false;
     // this prevents unwanted extra fetches
-    if (targetRef !== prevTargetRef) {
+    if (targetRef === prevTargetRef.current) {
       setIntersecting(false)
     }
 
