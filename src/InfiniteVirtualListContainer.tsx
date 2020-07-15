@@ -6,7 +6,6 @@ import { GET_STRAIN_LIST } from "./query"
 const InfiniteVirtualListContainer = () => {
   const [totalItems, setTotalItems] = React.useState(0)
   const [hasMore, setHasMore] = React.useState(true)
-  const [isLoadingMore, setIsLoadingMore] = React.useState(false)
   const [prevCursor, setPrevCursor] = React.useState(null)
   const { loading, error, data, fetchMore } = useQuery(GET_STRAIN_LIST, {
     variables: {
@@ -25,7 +24,6 @@ const InfiniteVirtualListContainer = () => {
       return
     }
     setPrevCursor(newCursor)
-    setIsLoadingMore(true)
     fetchMore({
       query: GET_STRAIN_LIST,
       variables: {
@@ -34,8 +32,6 @@ const InfiniteVirtualListContainer = () => {
         filter: "",
       },
       updateQuery: (previousResult: any, { fetchMoreResult }: any) => {
-        setIsLoadingMore(false)
-
         const previousEntry = previousResult.listStrains
         const previousStrains = previousEntry.strains
         const newStrains = fetchMoreResult.listStrains.strains
@@ -68,7 +64,6 @@ const InfiniteVirtualListContainer = () => {
       data={data.listStrains.strains}
       loadMore={loadMoreItems}
       hasMore={hasMore}
-      isLoadingMore={isLoadingMore}
       totalItems={totalItems}
     />
   )
