@@ -48,6 +48,8 @@ In the Dicty Stock Center web app, our [catalog pages](https://eric.dictybase.de
 
 ## Reasons for Change
 
+<Split style={{ textAlign: "left", height: "auto" }}>
+
 - More code complexity due to required nested render props patterns
 - React has moved to a hooks-based approach
 - Increased bundle size (combined > 10kb gzipped)
@@ -55,6 +57,8 @@ In the Dicty Stock Center web app, our [catalog pages](https://eric.dictybase.de
 <center>
   <Image src={virtualCode} height={400} width={329} />
 </center>
+
+</Split>
 
 ---
 
@@ -122,20 +126,20 @@ Why don't we just write our own library?
 - Performance issue when displaying upwards of 10,000 items
 - Every row is rendered to the DOM
 
-<img src={dom} height={400} />
+<Image src={dom} height={400} />
 
 ---
 
 ## List Virtualization
 
 In order to prevent all list items from rendering to the DOM, we can use a concept
-called "list virtualization" (or "windowing").
+called `list virtualization` (or "windowing").
 
 - All data is inserted into JavaScript state memory
 - Only the items shown in the viewport are inserted into the DOM, the rest remains
   in JS state
 
-<Image src={virtualization} height={450} />
+<Image src={virtualization} height={400} />
 
 ---
 
