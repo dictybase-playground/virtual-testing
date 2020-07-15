@@ -157,7 +157,6 @@ describe("useVirtualIntersection", () => {
         Array.from(Array(15).keys(), (n) => n + 1),
       )
       const parentRef = React.useRef<HTMLDivElement>(null)
-      // const targetRef = React.useRef<HTMLLIElement>(null)
       const { items, intersecting, setTargetRef } = useVirtualIntersection({
         parentRef,
         viewportHeight: 310,
@@ -197,7 +196,7 @@ describe("useVirtualIntersection", () => {
                     // @ts-ignore
                     style={item.style}
                     data-testid={`row-${item.index}`}>
-                    Row {data[item.index]}
+                    Row {data[item.index]} (with target ref)
                   </li>
                 )
               }
