@@ -31,7 +31,6 @@ type Props = {
   }>
   loadMore: () => void
   hasMore: boolean
-  isLoadingMore: boolean
   totalItems: number
 }
 
@@ -39,7 +38,6 @@ const InfiniteVirtualList = ({
   data,
   loadMore,
   hasMore,
-  isLoadingMore,
   totalItems,
 }: Props) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
@@ -67,44 +65,41 @@ const InfiniteVirtualList = ({
     }
   }, [hasMore, intersecting, loadMore, setIntersecting])
 
+  const listItems = items.map((item: any) => {
+    const strain = data[item.index]
+    const lastRow = totalItems - 1 === item.index
+    if (lastRow) {
+      return (
+        <ListItem
+          // @ts-ignore
+          ref={setTargetRef}
+          key={item.index}
+          id={`row-${item.index}`}
+          data-testid={`row-${item.index}`}
+          className={classes.row}
+          style={item.style}>
+          Loading more items...
+        </ListItem>
+      )
+    }
+    return (
+      <ListItem
+        key={item.index}
+        id={`row-${item.index}`}
+        data-testid={`row-${item.index}`}
+        className={classes.row}
+        style={item.style}>
+        <strong>ID:</strong>&nbsp;{strain.id} &nbsp;
+        <strong>Descriptor:</strong>&nbsp;
+        {strain.label}
+      </ListItem>
+    )
+  })
+
   return (
     <Paper ref={parentRef} className={classes.container}>
       <List style={{ position: "relative", height: `${innerHeight}px` }}>
-        {items.map((item: any) => {
-          const strain = data[item.index]
-
-          if (totalItems - 1 === item.index) {
-            return (
-              <ListItem
-                // @ts-ignore
-                ref={setTargetRef}
-                key={item.index}
-                id={`row-${item.index}`}
-                data-testid={`row-${item.index}`}
-                className={classes.row}
-                style={item.style}>
-                Loading more items...
-              </ListItem>
-            )
-          }
-          return (
-            <ListItem
-              key={item.index}
-              id={`row-${item.index}`}
-              data-testid={`row-${item.index}`}
-              className={classes.row}
-              style={item.style}>
-              <strong>ID:</strong>&nbsp;{strain.id} &nbsp;
-              <strong>Descriptor:</strong>&nbsp;
-              {strain.label}
-            </ListItem>
-          )
-        })}
-        {isLoadingMore && (
-          <ListItem className={classes.loading}>
-            Fetching more list items...
-          </ListItem>
-        )}
+        {listItems}
       </List>
     </Paper>
   )
