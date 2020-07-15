@@ -41,12 +41,7 @@ const InfiniteVirtualList = ({
   totalItems,
 }: Props) => {
   const parentRef = React.useRef<HTMLDivElement>(null)
-  const {
-    items,
-    intersecting,
-    setTargetRef,
-    setIntersecting,
-  } = useVirtualIntersection({
+  const { items, intersecting, setTargetRef } = useVirtualIntersection({
     parentRef,
     viewportHeight: 310,
     rowHeight: 35,
@@ -61,9 +56,8 @@ const InfiniteVirtualList = ({
   React.useEffect(() => {
     if (intersecting && hasMore) {
       loadMore()
-      setIntersecting(false)
     }
-  }, [hasMore, intersecting, loadMore, setIntersecting])
+  }, [hasMore, intersecting, loadMore])
 
   const listItems = items.map((item: any) => {
     const strain = data[item.index]
