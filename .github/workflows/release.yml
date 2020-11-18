@@ -7,6 +7,10 @@ jobs:
   automerge:
     runs-on: ubuntu-20.04
     steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: semantic release
         uses: ridedott/release-me-action@master
         env:
