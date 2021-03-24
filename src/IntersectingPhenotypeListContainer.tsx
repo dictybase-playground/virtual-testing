@@ -22,7 +22,7 @@ const IntersectingListContainer = () => {
   if (error) return <p>Error :(</p>
 
   const loadMoreItems = () => {
-    const newCursor = data.listStrainsWithPhenotype.nextCursor
+    const newCursor = data.listStrainsWithAnnotation.nextCursor
     if (newCursor === prevCursor) {
       return
     }
@@ -37,10 +37,10 @@ const IntersectingListContainer = () => {
       },
       updateQuery: (previousResult: any, { fetchMoreResult }: any) => {
         setIsLoadingMore(false)
-        const previousEntry = previousResult.listStrainsWithPhenotype
+        const previousEntry = previousResult.listStrainsWithAnnotation
         const previousStrains = previousEntry.strains
-        const newStrains = fetchMoreResult.listStrainsWithPhenotype.strains
-        const newCursor = fetchMoreResult.listStrainsWithPhenotype.nextCursor
+        const newStrains = fetchMoreResult.listStrainsWithAnnotation.strains
+        const newCursor = fetchMoreResult.listStrainsWithAnnotation.nextCursor
         const allStrains = [...previousStrains, ...newStrains]
 
         if (newCursor === 0) {
@@ -48,7 +48,7 @@ const IntersectingListContainer = () => {
         }
 
         return {
-          listStrainsWithPhenotype: {
+          listStrainsWithAnnotation: {
             nextCursor: newCursor,
             strains: allStrains,
             __typename: previousEntry.__typename,
@@ -60,7 +60,7 @@ const IntersectingListContainer = () => {
 
   return (
     <IntersectingList
-      data={data.listStrainsWithPhenotype.strains}
+      data={data.listStrainsWithAnnotation.strains}
       loadMore={loadMoreItems}
       hasMore={hasMore}
       isLoadingMore={isLoadingMore}

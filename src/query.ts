@@ -6,8 +6,11 @@ const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
     $limit: Int!
     $phenotype: String!
   ) {
-    listStrainsWithPhenotype(
-      input: { cursor: $cursor, limit: $limit, phenotype: $phenotype }
+    listStrainsWithAnnotation(
+      cursor: $cursor
+      limit: $limit
+      type: "phenotype"
+      annotation: $phenotype
     ) {
       nextCursor
       strains {
@@ -20,7 +23,7 @@ const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
 
 const GET_STRAIN_LIST = gql`
   query StrainList($cursor: Int!, $limit: Int!, $filter: String!) {
-    listStrains(input: { cursor: $cursor, limit: $limit, filter: $filter }) {
+    listStrains(cursor: $cursor, limit: $limit, filter: $filter) {
       nextCursor
       strains {
         id
@@ -32,7 +35,7 @@ const GET_STRAIN_LIST = gql`
 
 const GET_PLASMID_LIST = gql`
   query PlasmidListFilter($cursor: Int!, $filter: String!) {
-    listPlasmids(input: { cursor: $cursor, limit: 10, filter: $filter }) {
+    listPlasmids(cursor: $cursor, limit: 10, filter: $filter) {
       nextCursor
       plasmids {
         id
