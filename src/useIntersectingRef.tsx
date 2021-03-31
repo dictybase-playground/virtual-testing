@@ -48,7 +48,7 @@ const useIntersectingRef = ({
       rootMargin,
       threshold,
     })
-    if (targetRef && targetRef) {
+    if (targetRef) {
       observerRef.current.observe(targetRef)
     }
   }, [observerCallback, rootMargin, targetRef, threshold])
@@ -56,6 +56,7 @@ const useIntersectingRef = ({
   // maybe replace with useLayoutEffect?
   React.useEffect(() => {
     observe()
+
     return () => {
       disconnect()
     }
