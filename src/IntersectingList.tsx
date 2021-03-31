@@ -3,7 +3,7 @@ import Paper from "@material-ui/core/Paper"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import { makeStyles } from "@material-ui/core/styles"
-import useIntersecting from "./useIntersecting"
+import useIntersectingRef from "./useIntersectingRef"
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -40,18 +40,16 @@ const IntersectingList = ({
   hasMore,
   isLoadingMore,
 }: Props) => {
-  const targetRef = React.useRef<HTMLDivElement>(null)
-  const visible = useIntersecting({
-    targetRef,
+  const { intersecting, ref } = useIntersectingRef({
     hasMore,
   })
   const classes = useStyles()
 
   React.useEffect(() => {
-    if (visible && hasMore) {
+    if (intersecting && hasMore) {
       loadMore()
     }
-  }, [hasMore, loadMore, visible])
+  }, [hasMore, loadMore, intersecting])
 
   return (
     <Paper className={classes.container} id="parent-ref">
@@ -69,7 +67,7 @@ const IntersectingList = ({
             Fetching more list items...
           </ListItem>
         )}
-        <div ref={targetRef} />
+        <div ref={ref} />
       </List>
     </Paper>
   )

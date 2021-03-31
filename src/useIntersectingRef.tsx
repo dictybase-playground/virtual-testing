@@ -14,6 +14,11 @@ type ConfigParams = {
   hasMore: boolean
 }
 
+type UseIntersectingResponse = {
+  ref: (node?: Element | null) => void
+  intersecting: boolean
+}
+
 const useIntersectingRef = ({
   rootMargin = "0px",
   threshold = 0.25,
@@ -56,7 +61,7 @@ const useIntersectingRef = ({
     }
   }, [observe, disconnect])
 
-  return [intersecting, setTargetRef]
+  return { intersecting, ref: setTargetRef } as UseIntersectingResponse
 }
 
 export default useIntersectingRef
