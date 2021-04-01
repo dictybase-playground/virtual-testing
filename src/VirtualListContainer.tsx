@@ -1,5 +1,5 @@
 import React from "react"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import VirtualList from "./VirtualList"
 import { GET_STRAIN_LIST } from "./query"
 

@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import { gql } from "@apollo/client"
 
 const GET_STRAIN_LIST_WITH_PHENOTYPE = gql`
   query ListStrainsWithPhenotype(
