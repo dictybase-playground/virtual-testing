@@ -34,7 +34,7 @@ export const theme = themes.book
 
 In the Dicty Stock Center web app, our [catalog pages](https://eric.dictybase.dev/stockcenter/strains) use an infinite scrolling technique to display our full list of stocks.
 
-<Image src={current} height={400} />
+<Image src={current} height={500} />
 
 ---
 
@@ -251,27 +251,36 @@ The Intersection Observer API provides a way to asynchronously observe changes i
 <Split style={{ textAlign: "left", height: "auto" }}>
 
 <div>
-  This hook requires one <em>useEffect</em> method.
+  This hook creates a new <em>IntersectionObserver</em> that observes an
+  observer ref. It returns an object with two properties:
   <ul>
     <li>
-      This creates a new <em>IntersectionObserver</em> that observes a target
-      ref.
+      A{" "}
+      <a href="https://medium.com/@teh_builder/ref-objects-inside-useeffect-hooks-eb7c15198780#">
+        callback target ref
+      </a>{" "}
+      that is observed by the <em>IntersectionObserver</em>. This is necessary
+      to trigger effects when the ref changes.
     </li>
     <br />
     <li>
-      When the target and root elements are intersecting, a boolean is set to
-      true. This is then used by the component as guidance to load more data.
+      An <em>intersecting</em> boolean representing when the target and root
+      elements are intersecting. This is then used by the component as guidance
+      to load more data.
     </li>
   </ul>
+  This solution was inspired by this{" "}
+  <a href="https://www.samroelants.com/blog/using-the-intersectionobserver-api-with-react-hooks/">
+    blog post
+  </a>
+  .
 </div>
 
 <center>
-  <Image src={useIntersectionObserver} height={600} width={500} />
+  <Image src={useIntersectionObserver} height={750} width={520} />
 </center>
 
 </Split>
-
-This solution was inspired by this [blog post](https://www.samroelants.com/blog/using-the-intersectionobserver-api-with-react-hooks/).
 
 ---
 
@@ -301,7 +310,7 @@ This solution was inspired by this [blog post](https://www.samroelants.com/blog/
 
 ## Virtualization Attempt
 
-Using the `IntersectionObserver` would work well for some of our use cases, but
+Using `IntersectionObserver` would work well for some of our use cases, but
 it is not a good solution when displaying all 20,000+ strains in our catalog.
 
 For this, we need to use some type of list virtualization.
@@ -317,7 +326,7 @@ For this, we need to use some type of list virtualization.
 4. Return an array of items with each one containing the index of the data array to display,
    as well as the absolute styling for that row.
 
-(code snippet too big for this slide)
+[Code](https://github.com/dictyBase/dicty-hooks/blob/develop/src/hooks/useVirtualList.ts)
 
 This solution was inspired by this [blog post](https://medium.com/ingeniouslysimple/building-a-virtualized-list-from-scratch-9225e8bec120).
 
