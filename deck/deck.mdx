@@ -361,4 +361,29 @@ Wait... these work great solo, now we need to combine them?!?
 
 ---
 
-Solution coming soon...
+## Solution
+
+Thankfully both hooks can easily be used together.
+
+- Create one `useEffect` that fetches more data if `intersecting` is true
+- Add the target ref to the last row of the `rowData` provided by `useVirtualList`
+- Add a parent ref to the outer container
+
+That's it!
+
+[Code example](https://github.com/dictybase-playground/catalog-search/blob/feature/virtualization/src/CatalogList.tsx)
+
+---
+
+## Victory!
+
+By iterating through a few concepts and scenarios we were able to build our own catalog list feature using both the
+infinite scroll and list virtualization techniques.
+
+<center>
+  <Image
+    src="https://media.giphy.com/media/d2Z4rTi11c9LRita/giphy.gif"
+    height={500}
+    width={800}
+  />
+</center>
