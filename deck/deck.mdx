@@ -34,7 +34,7 @@ export const theme = themes.book
 
 In the Dicty Stock Center web app, our [catalog pages](https://eric.dictybase.dev/stockcenter/strains) use an infinite scrolling technique to display our full list of stocks.
 
-<Image src={current} height={500} />
+<Image src={current} style={{ width: "100%", height: "50%" }} />
 
 ---
 
@@ -126,7 +126,7 @@ Why don't we just write our own library?
 - Performance issue when displaying upwards of 10,000 items
 - Every row is rendered to the DOM
 
-<Image src={dom} height={400} />
+<Image src={dom} height={560} />
 
 ---
 
@@ -251,8 +251,8 @@ The Intersection Observer API provides a way to asynchronously observe changes i
 <Split style={{ textAlign: "left", height: "auto" }}>
 
 <div>
-  This hook creates a new <em>IntersectionObserver</em> that observes an
-  observer ref. It returns an object with two properties:
+  This hook creates a new <em>IntersectionObserver</em>. It returns an object
+  with two properties:
   <ul>
     <li>
       A{" "}
@@ -277,7 +277,7 @@ The Intersection Observer API provides a way to asynchronously observe changes i
 </div>
 
 <center>
-  <Image src={useIntersectionObserver} height={750} width={520} />
+  <Image src={useIntersectionObserver} height={750} width={600} />
 </center>
 
 </Split>
@@ -320,10 +320,9 @@ For this, we need to use some type of list virtualization.
 ## useVirtualList Steps
 
 1. Calculate start index and end index for each row
-2. Add optional overscan to render additional hidden elements above and below container
-3. Attach scroll event listener to the parent ref which updates the `scrollTop` state
+2. Attach scroll event listener to the parent ref which updates the `scrollTop` state
    on scroll. This measures how far the inner container is scrolled.
-4. Return an array of items with each one containing the index of the data array to display,
+3. Return an array of items with each one containing the index of the data array to display,
    as well as the absolute styling for that row.
 
 [Code](https://github.com/dictyBase/dicty-hooks/blob/develop/src/hooks/useVirtualList.ts)
@@ -337,6 +336,8 @@ This solution was inspired by this [blog post](https://medium.com/ingeniouslysim
 <ApolloProvider client={client}>
   <VirtualListContainer />
 </ApolloProvider>
+
+_Open your browser dev tools to see how these list items are rendered to the DOM._
 
 ---
 
@@ -374,13 +375,13 @@ Wait... these work great solo, now we need to combine them?!?
 
 Thankfully both hooks can easily be used together.
 
-- Create one `useEffect` that fetches more data if `intersecting` is true
+- Create one `useEffect` hook that fetches more data if `intersecting` is true
 - Add the target ref to the last row of the `rowData` provided by `useVirtualList`
 - Add a parent ref to the outer container
 
 That's it!
 
-[Code example](https://github.com/dictybase-playground/catalog-search/blob/feature/virtualization/src/CatalogList.tsx)
+[Code example](https://github.com/dictybase-playground/catalog-search/blob/main/src/CatalogList.tsx)
 
 ---
 
