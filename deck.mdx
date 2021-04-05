@@ -1,6 +1,6 @@
 import { Image, Split, themes } from "mdx-deck"
 import { ApolloProvider } from "@apollo/client"
-import { client } from "./src/App"
+import client from "./src/utils/apolloClient"
 import InfiniteListContainer from "./src/InfiniteListContainer.tsx"
 import IntersectingListContainer from "./src/IntersectingListContainer.tsx"
 import VirtualListContainer from "./src/VirtualListContainer.tsx"
@@ -337,7 +337,7 @@ This solution was inspired by this [blog post](https://medium.com/ingeniouslysim
   <VirtualListContainer />
 </ApolloProvider>
 
-_Open your browser dev tools to see how these list items are rendered to the DOM._
+Open your browser dev tools to see how these list items are rendered to the DOM.
 
 ---
 
