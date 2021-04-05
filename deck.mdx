@@ -34,7 +34,7 @@ export const theme = themes.book
 
 In the Dicty Stock Center web app, our [catalog pages](https://eric.dictybase.dev/stockcenter/strains) use an infinite scrolling technique to display our full list of stocks.
 
-<Image src={current} style={{ width: "100%", height: "50%" }} />
+<Image src={current} style={{ width: "800px", height: "328px" }} />
 
 ---
 
@@ -126,7 +126,7 @@ Why don't we just write our own library?
 - Performance issue when displaying upwards of 10,000 items
 - Every row is rendered to the DOM
 
-<Image src={dom} height={560} />
+<Image src={dom} height={393} width={800} />
 
 ---
 
@@ -139,7 +139,7 @@ called `list virtualization` (or "windowing").
 - Only the items shown in the viewport are inserted into the DOM, the rest remains
   in JS state
 
-<Image src={virtualization} height={400} />
+<Image src={virtualization} width={800} height={237} />
 
 ---
 
@@ -277,7 +277,7 @@ The Intersection Observer API provides a way to asynchronously observe changes i
 </div>
 
 <center>
-  <Image src={useIntersectionObserver} height={750} width={600} />
+  <Image src={useIntersectionObserver} height={650} width={508} />
 </center>
 
 </Split>
